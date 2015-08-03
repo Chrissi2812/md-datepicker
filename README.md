@@ -1,6 +1,11 @@
 # Material Design Datepicker
 Material Design inspired date- and timepicker.
 
+##Todo
+- [ ] Small device support
+- [ ] Better language support
+- [ ] Browser testing
+
 ## Usage
 ###Basic
 **HTML**
