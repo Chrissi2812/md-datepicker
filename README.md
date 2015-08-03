@@ -15,6 +15,7 @@ $(document).ready(function() {
 ###timepicker
 ###startday
 ###autoclose
+####true or false
 ###mindate
 ###maxdate
 ###color
