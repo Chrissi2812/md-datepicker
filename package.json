@@ -7,7 +7,7 @@
     "build:js": "uglifyjs src/js/moment.js src/js/md-datepicker.js --screw-ie8 -m > dist/%npm_package_name: =_%.min.js",
     "build:js-without": "uglifyjs src/js/md-datepicker.js --screw-ie8 -m > dist/%npm_package_name: =_%.dep.min.js",
     "build": "del dist /F /Q & npm run build:js & npm run build:js-without & npm run build:css",
-    "publish": "npm run build & git add --a & git push origin master"
+    "publish": "npm run build & git add --a & git commit -m publish & git push origin master"
   },
   "repository": {
     "type": "git",
