@@ -13,19 +13,21 @@ $(document).ready(function() {
 ###language
 ###theme
 **dark or light**
+
+
 additonally there are some colors to combine with the two themes
--red
--pink
--deep_purple
--indigo
--blue
--teal
--green
--light_green
--amber
--orange
--grey
--blue_grey
+-	red
+-	pink
+-	deep_purple
+-	indigo
+-	blue
+-	teal
+-	green
+-	light_green
+-	amber
+-	orange
+-	grey
+-	blue_grey
 
 **Example:**
 ```js
