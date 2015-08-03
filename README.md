@@ -1,4 +1,4 @@
-# Material Design Datepicker :suspect:
+# Material Design Datepicker
 Material Design inspired date- and timepicker.
 
 ##Todo
