@@ -468,7 +468,6 @@ var id=0;
 			$(window).off('resize');
 		}
 		var update_view = function(){
-			console.log(validRange());
 			if (validRange()) {
 				var select = (proxy.set=='start') ? 'end':'start';
 				var elem = $('.md-select-wrap>span:matches('+proxy[select].date.g(1)+')')
@@ -485,7 +484,9 @@ var id=0;
 						$(elem[1]).nextAll().addClass('disabled');
 					}
 				}
-			};
+			} else {
+				proxy.find('.md-select-wrap>span').removeClass('disabled');
+			}
 
 			proxy.el.months.text(proxy.date.toLocaleString(settings.language, {month: 'long'}));
 			proxy.el.years.text(proxy.date.g(1));
