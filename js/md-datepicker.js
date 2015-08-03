@@ -750,13 +750,3 @@ $.expr[':'].matches = $.expr.createPseudo(function(arg) {
         return $(elem).text().match("^" + arg + "$");
     };
 });
-
-$(document).ready(function() {
-	$("input.datepicker").md_datepicker({
-		timepicker:true,
-		theme: 'dark red',
-		submit: 'timestamp',
-		// _24h:true,
-		format: 'DD.MM.YYYY HH:mm [Uhr]'
-	});
-});
