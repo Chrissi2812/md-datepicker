@@ -5,8 +5,8 @@
   "scripts": {
     "build:css": "autoprefixer < src/css/md-datepicker.css | cssmin > dist/%npm_package_name: =_%.min.css",
     "build:js": "uglifyjs src/js/moment.js src/js/md-datepicker.js > dist/%npm_package_name: =_%.min.js",
-    "build": "npm run build:js & npm run build:css",
-    "publish": "npm run build & git add --a & git commit -m ''"
+    "build": "del dist /F /Q & npm run build:js & npm run build:css",
+    "publish": "npm run build & git add --a & git commit -m 'publish' & git push origin master"
   },
   "repository": {
     "type": "git",
