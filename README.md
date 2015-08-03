@@ -2,6 +2,8 @@
 Material Design inspired date- and timepicker.
 
 ## Usage
+###Basic
+**HTML**
 ```html
 	<link rel="stylesheet" href="md-datepicker/dist/md-datepicker.min.css">
 </head>
@@ -11,6 +13,7 @@ Material Design inspired date- and timepicker.
 	<script src="md-datepicker/dist/md-datepicker.min.js"></script>
 </body>
 ```
+**JS**
 ```js
 $(document).ready(function() {
 	$("input.datepicker").md_datepicker({
@@ -19,6 +22,9 @@ $(document).ready(function() {
 });
 ```
 ###Daterange
+Simple add the **data-md-start** and **data-md-end** to the inputs.
+Only 2 Inputs are allowed.
+**HTML**
 ```html
 	<input type="text" id="start-date" class="datepicker" name="start-timestamp" data-md-start>
 	<input type="text" id="end-date" class="datepicker" name="end-timestamp"  data-md-end>
