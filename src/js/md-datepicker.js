@@ -468,7 +468,8 @@ var id=0;
 			$(window).off('resize');
 		}
 		var update_view = function(){
-			if (proxy.range) {
+			console.log(validRange());
+			if (validRange()) {
 				var select = (proxy.set=='start') ? 'end':'start';
 				var elem = $('.md-select-wrap>span:matches('+proxy[select].date.g(1)+')')
 
