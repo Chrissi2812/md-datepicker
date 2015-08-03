@@ -3,13 +3,13 @@ Material Design inspired date- and timepicker.
 
 ## Usage
 ```html
-		<link rel="stylesheet" href="md-datepicker/dist/md-datepicker.min.css">
-	</head>
-	<body>
-		<input type="text" id="birthday" class="datepicker" name="birthday">
+	<link rel="stylesheet" href="md-datepicker/dist/md-datepicker.min.css">
+</head>
+<body>
+	<input type="text" id="birthday" class="datepicker" name="birthday">
 
-		<script src="md-datepicker/dist/md-datepicker.min.js"></script>
-	</body>
+	<script src="md-datepicker/dist/md-datepicker.min.js"></script>
+</body>
 ```
 ```js
 $(document).ready(function() {
