@@ -1,6 +1,7 @@
 .md-datepicker {
     position: absolute;
     width: 350px;
+    max-width: calc(100% - 16px);
     left: 50%;
     top: 100px;
     background: #fff;
