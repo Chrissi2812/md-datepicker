@@ -39,6 +39,7 @@ additonally there are some colors to combine with the two themes
 **true or false**
 ###autoclose
 **true or false**
+
 Automatic closing the datepicker after input
 
 ###_24h
