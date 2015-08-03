@@ -5,21 +5,40 @@ Material Design inspired date- and timepicker.
 ```js
 $(document).ready(function() {
 	$("input.datepicker").md_datepicker({
-		format]'
+		format: 'DD.MM.YYYY HH:mm [Uhr]'
 	});
 });
 ```
 ## Properties
 ###language
 ###theme
+**dark or light**
+additonally there are some colors to combine with the two themes
+-red
+-pink
+-deep_purple
+-indigo
+-blue
+-teal
+-green
+-light_green
+-amber
+-orange
+-grey
+-blue_grey
+
+**Example:**
+```js
+	$("input.datepicker").md_datepicker({
+		theme: 'dark red'
+	});
+```
 ###timepicker
-###startday
+**true or false**
 ###autoclose
 **true or false**
+Automatic closing the datepicker after input
 
-###mindate
-###maxdate
-###color
 ###_24h
 ###format
 ###animated
