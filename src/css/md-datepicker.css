@@ -9,7 +9,7 @@
 	   url(../fonts/material-icons.woff) format('woff'),
 	   url(../fonts/material-icons.ttf) format('truetype');
 }
-.md-datepicker i {
+i {
 	font-family: 'Material Icons';
 	font-weight: normal;
 	font-style: normal;
