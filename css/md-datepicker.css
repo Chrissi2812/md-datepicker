@@ -287,7 +287,8 @@ i.md-toggle-state {
 .md-clock {
     position: relative;
     height: 280px;
-    margin: 25px 35px;
+    width: 280px;
+    margin: 25px auto;
     border-radius: 50%;
     background-color: #eee;
     color: #222;
@@ -627,8 +628,6 @@ circle.lolliclock-canvas-fg {
     stroke: #607D8B;
 }
 
-
-
 .md-datepicker.animate {
     transition: all .25s cubic-bezier(.55,0,.1,1);
 }
@@ -647,5 +646,3 @@ i.disabled {
     pointer-events: none;
     color: rgba(170, 170, 170, 0.5);
 }
-
-/*TEST*/

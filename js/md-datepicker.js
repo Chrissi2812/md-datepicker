@@ -372,10 +372,16 @@ var id=0;
 			proxy.fg.setAttribute('cx', cx);
 			proxy.fg.setAttribute('cy', cy);
 		};
-
+		var locate = function(input){
+			var pos = $(input).offset(), width = proxy.width(), height = proxy.height();
+			pos.top = (pos.top+height+8>=window.innerHeight) ? window.innerHeight-height-8 : pos.top;
+			pos.left = (pos.left+width+8>=window.innerWidth) ? window.innerWidth-width-8 : pos.left;
+			return pos;
+		}
 		this.show = function(input){
 			var date_str = (input.value!='') ? (settings.format) ?  moment(input.value, settings.format) : moment(input.value) : moment(),
-				pos 	 = $(input).offset();
+				pos 	 = locate(input);
+
 			proxy.date = new Date(date_str);
 			proxy.set = (proxy.start==input) ? 'start' : 'end';
 			proxy.date = (isNaN(proxy.date.getTime())) ? new Date() : proxy.date;
@@ -440,11 +446,24 @@ var id=0;
 				event.preventDefault();
 				hide(input);
 			});
+			var doit;
+			$(window).on('resize', function(event) {
+				clearTimeout(doit);
+				pos = locate(input);
+				proxy.css({
+					top: pos.top,
+					left: pos.left
+				}).removeClass('animate');
+  				doit = setTimeout(function(){
+  					proxy.addClass('animate')
+  				}, 100);
+			});
 		}
 		var hide = function(input){
 			$(input).removeClass('focused');
 			proxy.removeClass('clockpicker md-datepicker-visible animate');
 			proxy.el.buttons.off();
+			$(window).off('resize');
 		}
 		var update_view = function(){
 			if (proxy.range) {
