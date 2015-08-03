@@ -2,10 +2,10 @@
 Material Design inspired date- and timepicker.
 
 # Usage
-´´´js
+```js
 $(document).ready(function() {
 	$("input.datepicker").md_datepicker({
 		format: 'DD.MM.YYYY HH:mm [Uhr]'
 	});
 });
-´´´
+```
