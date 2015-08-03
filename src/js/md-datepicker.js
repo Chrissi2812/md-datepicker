@@ -2,6 +2,12 @@ var id=0;
 (function ( $, window, document, undefined ) {
 	$.fn.md_datepicker = function(options) {
 		"use strict";
+		function createSvgElement(name) {
+			return document.createElementNS(svgNS, name);
+		}
+		function createTick(dialRadius, radian, tickRadius, num, scale){
+			return '<div class="lolliclock-tick" style="left:'+(dialRadius + Math.sin(radian) * (radius * scale) - tickRadius).toFixed(2)+'px;top:'+(dialRadius - Math.cos(radian) * (radius*scale) - tickRadius).toFixed(2)+'px">'+num+'</div>';
+		}
 		id++;
 		var initilized = false;
 		this.each(function() {
@@ -137,9 +143,7 @@ var id=0;
 				duration = 350;
 
 			// Build ticks
-			function createTick(dialRadius, radian, tickRadius, num, scale){
-				return '<div class="lolliclock-tick" style="left:'+(dialRadius + Math.sin(radian) * (radius * scale) - tickRadius).toFixed(2)+'px;top:'+(dialRadius - Math.cos(radian) * (radius*scale) - tickRadius).toFixed(2)+'px">'+num+'</div>';
-			}
+
 			// Hours view
 			var hours = (settings._24h) ? 25 : 13;
 			for (var i = 1, hour_tmpl="",radian; i < hours; i++) {
@@ -176,9 +180,7 @@ var id=0;
 			'</div>',
 			svgNS = 'http://www.w3.org/2000/svg';
 
-			function createSvgElement(name) {
-				return document.createElementNS(svgNS, name);
-			}
+
 			// Draw clock SVG
 			var svg = createSvgElement('svg');
 			svg.setAttribute('class', 'lolliclock-svg');
