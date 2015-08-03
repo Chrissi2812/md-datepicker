@@ -16,6 +16,7 @@ $(document).ready(function() {
 ###startday
 ###autoclose
 **true or false**
+
 ###mindate
 ###maxdate
 ###color
