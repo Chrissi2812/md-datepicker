@@ -2,11 +2,11 @@
   "name": "md-datepicker",
   "version": "1.0.1",
   "description": "Material Design inpired date- and timepicker",
-  "main": "index.js",
   "scripts": {
-    "build:css": "autoprefixer < css/md-datepicker.css | cssmin > dist/md-datepicker.min.css",
-    "build:js": "uglifyjs js/moment.js js/md-datepicker.js > dist/md-datepicker.min.js",
-    "build": "npm run build:js & npm run build:css"
+    "build:css": "autoprefixer < src/css/md-datepicker.css | cssmin > dist/%npm_package_name: =_%.min.css",
+    "build:js": "uglifyjs src/js/moment.js src/js/md-datepicker.js > dist/%npm_package_name: =_%.min.js",
+    "build": "npm run build:js & npm run build:css",
+    "publish": "npm run build & git add --a & git commit -m ''"
   },
   "repository": {
     "type": "git",
