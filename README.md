@@ -24,6 +24,7 @@ $(document).ready(function() {
 ###Daterange
 Simple add the **data-md-start** and **data-md-end** to the inputs.
 Only 2 Inputs are allowed.
+
 **HTML**
 ```html
 	<input type="text" id="start-date" class="datepicker" name="start-timestamp" data-md-start>
@@ -34,7 +35,6 @@ Only 2 Inputs are allowed.
 ###language
 ###theme
 **dark or light**
-
 
 additonally there are some colors to combine with the two themes
 -	red
