@@ -318,8 +318,8 @@ i.md-toggle-state {
 .md-datepicker>div:not(:first-child){
     background-color: #fff;
 }
-.md-datepicker.dark:before,
-.md-datepicker>div:not(:first-child) {
+.md-datepicker.md-dark:before,
+.md-datepicker.md-dark>div:not(:first-child) {
 	background-color: #424242;
 }
 .md-datepicker-views {
