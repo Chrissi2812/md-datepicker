@@ -315,11 +315,13 @@ i.md-toggle-state {
 	transition: all .3s cubic-bezier(.55,0,.1,1);
 }
 
-.md-datepicker>div:not(:first-child){
+.md-datepicker>div:not(:first-child),
+.md-select-wrap{
     background-color: #fff;
 }
 .md-datepicker.md-dark:before,
-.md-datepicker.md-dark>div:not(:first-child) {
+.md-datepicker.md-dark>div:not(:first-child),
+.md-select-wrap {
 	background-color: #424242;
 }
 .md-datepicker-views {
