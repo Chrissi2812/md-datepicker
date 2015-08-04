@@ -37,7 +37,6 @@ i {
 	max-width: calc(100% - 16px);
 	left: 50%;
 	top: 100px;
-	background: #fff;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
 	border-radius: 2px;
 	overflow: hidden;
@@ -49,6 +48,16 @@ i {
 	font-family: roboto;
 	color: #fff;
 	font-weight: normal;
+}
+.md-datepicker:before {
+    content: "";
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: 96px;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 0;
 }
 .md-datepicker-animated {
 	transition: transform .25s cubic-bezier(.55,0,.1,1), opacity .25s cubic-bezier(.55,0,.1,1);
@@ -306,10 +315,13 @@ i.md-toggle-state {
 	transition: all .3s cubic-bezier(.55,0,.1,1);
 }
 
-.md-datepicker>div, .md-datepicker>div>div {
-	background: inherit;
+.md-datepicker>div:not(:first-child){
+    background-color: #fff;
 }
-
+.md-datepicker.dark:before,
+.md-datepicker>div:not(:first-child) {
+	background-color: #424242;
+}
 .md-datepicker-views {
 	display: flex;
 	transition: transform .5s cubic-bezier(.55,0,.1,1);
@@ -437,7 +449,6 @@ circle.lolliclock-canvas-fg {
 	background: #555;
 }
 
-.md-datepicker.md-dark,
 .md-dark .md-touchtarget {
 	background: #424242;
 }
