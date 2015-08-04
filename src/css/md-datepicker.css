@@ -321,7 +321,7 @@ i.md-toggle-state {
 }
 .md-datepicker.md-dark:before,
 .md-datepicker.md-dark>div:not(:first-child),
-.md-select-wrap {
+.md-datepicker.md-dark .md-select-wrap {
 	background-color: #424242;
 }
 .md-datepicker-views {
