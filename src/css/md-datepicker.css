@@ -164,11 +164,13 @@ span.weekday:after {
 	position: relative;
 	z-index: 2;
 	cursor: pointer;
+	display: block;
 }
 
 .md-weekday>span {
 	width: calc(100%/7);
 	text-align: center;
+	display: block;
 }
 
 .md-selecteddate:before {
@@ -378,7 +380,9 @@ i.md-toggle-state:hover {
 .clockpicker .md-datepicker-views {
 	transform: translateX(-100%);
 }
-
+.md-ampm-toggle>*{
+	display: block;
+}
 .md-ampm-toggle>*:first-child {
 	margin-bottom: 0.25em;
 	pointer-events: none;
