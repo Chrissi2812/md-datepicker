@@ -40,9 +40,7 @@
 			submit:'string',
 			custom_class:''
 		},
-		localesupport = function(){
-			Date.prototype.toLocaleString!=undefined;
-		}(),
+		localesupport = toLocaleStringSupports(),
 		touchSupported = 'ontouchstart' in window,
 		mousedownEvent = 'mousedown' + ( touchSupported ? ' touchstart' : ''),
 		mousemoveEvent = 'mousemove.lolliclock' + ( touchSupported ? ' touchmove.lolliclock' : ''),
@@ -73,8 +71,8 @@
 				month_array[i] = temp_day.toLocaleString(settings.language, {month: 'long'});
 			};
 		} else {
-			var day_array 	= locale[settings.language].weekday,
-				month_array = locale[settings.language].month;
+			var day_array 	= locale[settings.language.split('-')[0]].weekday,
+				month_array = locale[settings.language.split('-')[0]].month;
 		};
 		parts 	 = day_array.splice(0, settings.startday);
 		var weekdays = day_array.concat(parts),
@@ -760,7 +758,7 @@ Date.prototype.g = function(v){
 };
 Date.prototype.loc = function(lang, options){
 	console.log(Object.keys(options)[0], this.g((options.weekday) ? 0 : 2), Date.prototype.toLocaleString);
-	if (Date.prototype.toLocaleString!=undefined) {
+	if (toLocaleStringSupports()) {
 		return this.toLocaleString(lang, options);
 	} else {
 		return locale[lang.split('-')[0]][Object.keys(options)[0]][this.g((options.weekday) ? 0 : 2)];
@@ -776,18 +774,16 @@ String.prototype.pad = function(size) {
 	while (s.length < (size || 2)) {s = "0" + s;}
 	return s;
 }
-function test_locale(){
-	Date.prototype.toLocaleString!=undefined
-}
-
-
 $.expr[':'].matches = $.expr.createPseudo(function(arg) {
     return function( elem ) {
         return $(elem).text().match("^" + arg + "$");
     };
 });
-
-var test = new Date();
-console.log(test.loc('de', {month:'long'}));
-console.log(test.loc('de', {month:'short'}));
-console.log(test.loc('de', {weekday:'short'}));
+function toLocaleStringSupports() {
+	try {
+		new Date().toLocaleString('i');
+	} catch (e) {
+		return (e.name==='RangeError');
+	}
+	return false;
+}
