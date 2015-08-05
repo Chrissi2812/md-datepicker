@@ -64,6 +64,7 @@ i {
 	transform: scale(0.5);
 	opacity: 0;
 	transform-origin: 0 0;
+	display: table-cell;
 	display: flex;
 	pointer-events: none;
 }
@@ -71,6 +72,7 @@ i {
 	pointer-events: none;
 }
 .md-datepicker:not(.md-datepicker-animated).md-datepicker-visible{
+	display: table-cell;
 	display: flex;
 }
 .md-datepicker-animated.md-datepicker-visible {
@@ -83,6 +85,7 @@ i {
 	background: #1565C0;
 	padding: 16px;
 	box-sizing: border-box;
+	display: table-cell;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -93,6 +96,7 @@ i {
 
 .md-datepick-month {
 	color: #aaa;
+	display: table-cell;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -114,6 +118,7 @@ span.weekday:after {
 .md-touchtarget {
 	height: 32px;
 	width: 32px;
+	display: table-cell;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -137,6 +142,7 @@ span.weekday:after {
 
 .md-weekday {
 	color: #bbb;
+	display: table-cell;
 	display: flex;
 	font-size: 12px;
 	text-transform: uppercase;
@@ -145,6 +151,7 @@ span.weekday:after {
 
 .md-week {
 	color: #222;
+	display: table-cell;
 	display: flex;
 	flex-wrap: wrap;
 }
@@ -191,6 +198,7 @@ span.weekday:after {
 }
 
 .md-buttons {
+	display: table-cell;
 	display: flex;
 	justify-content: flex-end;
 	padding: 8px 16px;
@@ -256,6 +264,7 @@ span.weekday:after {
 }
 
 .md-select-wrap {
+	display: table-cell;
 	display: flex;
 	flex-direction: column;
 	text-align: center;
@@ -325,6 +334,7 @@ i.md-toggle-state {
 	background-color: #424242;
 }
 .md-datepicker-views {
+	display: table-cell;
 	display: flex;
 	transition: transform .5s cubic-bezier(.55,0,.1,1);
 }
@@ -349,6 +359,7 @@ i.md-toggle-state {
 	position: absolute;
 	width: 40px;
 	height: 40px;
+	display: table-cell;
 	display: flex;
 	align-items: center;
 	justify-content: space-around;
@@ -376,12 +387,14 @@ i.md-toggle-state:hover {
 .md-ampm-toggle {
 	font-size: 16px;
 	font-weight: 300;
+	display: table-cell;
 	display: flex;
 	flex-direction: column;
 	margin-left: 1em;
 }
 
 .md-datepicker-timeview .md-datepicker-headline {
+	display: table-cell;
 	display: flex;
 	align-items: center;
 	font-size: 3.5em;
