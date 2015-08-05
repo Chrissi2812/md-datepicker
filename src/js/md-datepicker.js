@@ -761,7 +761,7 @@ Date.prototype.loc = function(lang, options){
 	if (toLocaleStringSupports()) {
 		return this.toLocaleString(lang, options);
 	} else {
-		return locale[lang.split('-')[0]][Object.keys(options)[0]][this.g((options.weekday) ? 0 : 2)];
+		return locale[lang.split('-')[0]][Object.keys(options)[0]][this.g((options.weekday) ? 0 : 2)]+"";
 	}
 };
 Number.prototype.pad = function(size) {
