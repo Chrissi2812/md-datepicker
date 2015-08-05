@@ -1,4 +1,14 @@
-var id=0;
+﻿var id=0,
+	locale = {
+		en: {
+			month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+			weekday: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+		},
+		de: {
+			month: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+			weekday: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+		}
+	};
 (function ( $, window, document, undefined ) {
 	$.fn.md_datepicker = function(options) {
 		"use strict";
@@ -30,6 +40,9 @@ var id=0;
 			submit:'string',
 			custom_class:''
 		},
+		localesupport = function(){
+			Date.prototype.toLocaleString!=undefined;
+		}(),
 		touchSupported = 'ontouchstart' in window,
 		mousedownEvent = 'mousedown' + ( touchSupported ? ' touchstart' : ''),
 		mousemoveEvent = 'mousemove.lolliclock' + ( touchSupported ? ' touchmove.lolliclock' : ''),
@@ -39,7 +52,7 @@ var id=0;
 		weekdaynumber = [0,1,2,3,4,5,6],
 		parts = weekdaynumber.splice(-settings.startday),
 		weekdaynumber = parts.concat(weekdaynumber);
-		settings.language = (settings.language) ? settings.language : navigator.language || navigator.userLanguage;
+		settings.language = (settings.language) ? settings.language : navigator.language || navigator.userLanguage || 'en';
 		today.setSeconds(0);
 		if (settings.format) {
 			var delimiter 	= settings.format.match(/\W/),
@@ -50,25 +63,32 @@ var id=0;
 			});
 
 		};
-
-		for (var i = 0,temp_day, day_array = []; i < 7; i++) {
-			temp_day = new Date(2015, 1, i);
-			day_array[temp_day.g()] = temp_day.toLocaleString(settings.language, {weekday: 'short'}).replace(".","")
+		if (localesupport) {
+			for (var i = 0,temp_day, day_array = []; i < 7; i++) {
+				temp_day = new Date(2015, 1, i);
+				day_array[temp_day.g()] = temp_day.toLocaleString(settings.language, {weekday: 'short'}).replace(".","")
+			};
+			for (var i = 0,temp_day, month_array = []; i < 12; i++) {
+				temp_day = new Date(2015, i, 1);
+				month_array[i] = temp_day.toLocaleString(settings.language, {month: 'long'});
+			};
+		} else {
+			var day_array 	= locale[settings.language].weekday,
+				month_array = locale[settings.language].month;
 		};
 		parts 	 = day_array.splice(0, settings.startday);
 		var weekdays = day_array.concat(parts),
 			day_template = "",
-			weektemplate = "";
+			weektemplate = "",
+			month_template = "";
 
-		$.each(weekdays, function(index, val) {
+		$.each(weekdays, function(i, val) {
 			weektemplate+= '<span>'+val+'</span>';
 		});
+		$.each(month_array, function(i, val) {
+			month_template+='<span data-month="'+i+'">'+month_array[i]+'</span>';
+		});
 
-		for (var i = 0,temp_day, month_array = [], month_template=""; i < 12; i++) {
-			temp_day = new Date(2015, i, 1);
-			month_array[i] = temp_day.toLocaleString(settings.language, {month: 'long'})
-			month_template+='<span data-month="'+i+'">'+month_array[i]+'</span>'
-		};
 		for (var i = 0,temp_day, year_template="", today_year = today.g(1); i < 100; i++) {
 			year_template+='<span>'+(today_year-i)+'</span>'
 		};
@@ -488,10 +508,10 @@ var id=0;
 				proxy.find('.md-select-wrap>span').removeClass('disabled');
 			}
 
-			proxy.el.months.text(proxy.date.toLocaleString(settings.language, {month: 'long'}));
+			proxy.el.months.text(proxy.date.loc(settings.language, {month: 'long'}));
 			proxy.el.years.text(proxy.date.g(1));
 			proxy.el.days.text(proxy.date.g(3));
-			proxy.el.weekday.text(proxy.date.toLocaleString(settings.language, {weekday: 'short'}).replace(".",""));
+			proxy.el.weekday.text(proxy.date.loc(settings.language, {weekday: 'short'}).replace(".",""));
 
 			if (settings.timepicker) {
 				proxy.removeClass('minute');
@@ -612,7 +632,7 @@ var id=0;
 
 				days+="<span"+((classes.length>=1) ? ' class="'+classes.join(" ")+'"' : ''  )+" >"+i+"</span>"
 			};
-			proxy.el[view].find('.md-month-display').text(tempdate.toLocaleString(settings.language, {month: 'long'}))
+			proxy.el[view].find('.md-month-display').text(tempdate.loc(settings.language, {month: 'long'}))
 			proxy.el[view].find('.md-year-display').text(tempdate.g(1))
 			proxy.el[view].find('.md-week').html(days);
 		};
@@ -737,6 +757,13 @@ Number.prototype.remap = function(low1, high1, low2, high2){
 }
 Date.prototype.g = function(v){
 	return (v==1)?this.getFullYear():(v==2)?this.getMonth():(v==4)?this.getHours():(v==5)?this.getMinutes():(v==3)?this.getDate():this.getDay();
+};
+Date.prototype.loc = function(lang, options){
+	if (Date.prototype.toLocaleString!=undefined) {
+		return this.toLocaleString(lang, options);
+	} else {
+		return locale[lang][Object.keys(options)[0]][this.g((options.weekday) ? 0 : 2)];
+	}
 };
 Number.prototype.pad = function(size) {
 	var s = String(this);
