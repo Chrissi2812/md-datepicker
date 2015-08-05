@@ -52,7 +52,7 @@
 		weekdaynumber = [0,1,2,3,4,5,6],
 		parts = weekdaynumber.splice(-settings.startday),
 		weekdaynumber = parts.concat(weekdaynumber);
-		settings.language = (settings.language) ? settings.language : navigator.language || navigator.userLanguage || 'en';
+		settings.language = (settings.language) ? settings.language : navigator.language.split('-')[0] || navigator.userLanguage.split('-')[0] || 'en';
 		today.setSeconds(0);
 		if (settings.format) {
 			var delimiter 	= settings.format.match(/\W/),
