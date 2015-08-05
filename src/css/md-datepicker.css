@@ -297,6 +297,7 @@ html:not(.ua-chrome) .md-select-wrap {
 .md-select-wrap>span {
 	padding: 16px;
 	width: 100%;
+	display: block;
 	box-sizing: border-box;
 	flex-shrink: 0;
 }

@@ -3,12 +3,11 @@
   "version": "1.1.7",
   "description": "Material Design inpired date- and timepicker",
   "scripts": {
-    "build:css": "autoprefixer < src/css/md-datepicker.css | cssmin > dist/%npm_package_name: =_%.min.css",
-    "build:js": "uglifyjs src/js/moment.js src/js/md-datepicker.js --screw-ie8 -m > dist/%npm_package_name: =_%.min.js",
+    "build:css": "autoprefixer -b \"last 2 versions\" < src/css/md-datepicker.css | cssmin > dist/%npm_package_name: =_%.min.css",
+    "build:js": "uglifyjs src/js/md-datepicker.js --screw-ie8 -m >> dist/%npm_package_name: =_%.min.js",
     "build:js-without": "uglifyjs src/js/md-datepicker.js --screw-ie8 -m > dist/%npm_package_name: =_%.dep.min.js",
-    "build": "del dist /F /Q & npm run build:js & npm run build:js-without & npm run build:css",
-    "publish": "npm run build & npm run commit & git push origin master",
-    "commit": "git add --a & git commit -m publish"
+    "build": "npm run build:js & npm run build:js-without & npm run build:css",
+    "prebuild": "del dist /F /Q & git mu & uglifyjs lib/cssua/cssua.js lib/jquery-easing/jquery.easing.js lib/moment/moment.js --screw-ie8 -m > dist/%npm_package_name: =_%.min.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +26,7 @@
   "devDependencies": {
     "autoprefixer": "latest",
     "cssmin": "latest",
-    "uglify-js": "latest"
+    "uglify-js": "latest",
+    "uglifyjs-folder":"latest"
   }
 }

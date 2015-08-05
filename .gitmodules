@@ -1,0 +1,9 @@
+[submodule "lib/jquery-easing"]
+	path = lib/jquery-easing
+	url = https://github.com/gdsmith/jquery.easing.git
+[submodule "lib/cssua"]
+	path = lib/cssua
+	url = https://github.com/mckamey/cssuseragent.git
+[submodule "lib/moment"]
+	path = lib/moment
+	url = https://github.com/moment/moment.git
