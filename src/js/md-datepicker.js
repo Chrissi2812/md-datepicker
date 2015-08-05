@@ -52,7 +52,7 @@
 		weekdaynumber = [0,1,2,3,4,5,6],
 		parts = weekdaynumber.splice(-settings.startday),
 		weekdaynumber = parts.concat(weekdaynumber);
-		settings.language = (settings.language) ? settings.language : navigator.language.split('-')[0] || navigator.userLanguage.split('-')[0] || 'en';
+		settings.language = (settings.language) ? settings.language : navigator.language || navigator.userLanguage || 'en';
 		today.setSeconds(0);
 		if (settings.format) {
 			var delimiter 	= settings.format.match(/\W/),
@@ -759,11 +759,11 @@ Date.prototype.g = function(v){
 	return (v==1)?this.getFullYear():(v==2)?this.getMonth():(v==4)?this.getHours():(v==5)?this.getMinutes():(v==3)?this.getDate():this.getDay();
 };
 Date.prototype.loc = function(lang, options){
-	console.log(Object.keys(options)[0], this.g((options.weekday) ? 0 : 2), (Date.prototype.toLocaleString!=undefined));
+	console.log(Object.keys(options)[0], this.g((options.weekday) ? 0 : 2), Date.prototype.toLocaleString);
 	if (Date.prototype.toLocaleString!=undefined) {
 		return this.toLocaleString(lang, options);
 	} else {
-		return locale[lang][Object.keys(options)[0]][this.g((options.weekday) ? 0 : 2)];
+		return locale[lang.split('-')[0]][Object.keys(options)[0]][this.g((options.weekday) ? 0 : 2)];
 	}
 };
 Number.prototype.pad = function(size) {
@@ -776,6 +776,10 @@ String.prototype.pad = function(size) {
 	while (s.length < (size || 2)) {s = "0" + s;}
 	return s;
 }
+function test_locale(){
+	Date.prototype.toLocaleString!=undefined
+}
+
 
 $.expr[':'].matches = $.expr.createPseudo(function(arg) {
     return function( elem ) {

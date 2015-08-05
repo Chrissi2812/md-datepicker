@@ -57,7 +57,7 @@ i {
     top: 96px;
     bottom: 0;
     background-color: #fff;
-    z-index: 0;
+    z-index: -1;
 }
 .md-datepicker-animated {
 	transition: transform .25s cubic-bezier(.55,0,.1,1), opacity .25s cubic-bezier(.55,0,.1,1);
