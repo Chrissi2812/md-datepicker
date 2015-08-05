@@ -759,6 +759,7 @@ Date.prototype.g = function(v){
 	return (v==1)?this.getFullYear():(v==2)?this.getMonth():(v==4)?this.getHours():(v==5)?this.getMinutes():(v==3)?this.getDate():this.getDay();
 };
 Date.prototype.loc = function(lang, options){
+	console.log(Object.keys(options)[0], this.g((options.weekday) ? 0 : 2), (Date.prototype.toLocaleString!=undefined));
 	if (Date.prototype.toLocaleString!=undefined) {
 		return this.toLocaleString(lang, options);
 	} else {
