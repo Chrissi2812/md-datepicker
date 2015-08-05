@@ -781,3 +781,8 @@ $.expr[':'].matches = $.expr.createPseudo(function(arg) {
         return $(elem).text().match("^" + arg + "$");
     };
 });
+
+var test = new Date();
+console.log(test.loc('de', {month:'long'}));
+console.log(test.loc('de', {month:'short'}));
+console.log(test.loc('de', {weekday:'short'}));
