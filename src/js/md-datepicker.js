@@ -16,11 +16,19 @@
 				_cancel:'Abrrechen'
 			}
 		}
-	};
+	},prefixes=["moz", "ms", "webkit", "o"];
 (function ( $, window, document, undefined ) {
+	function flexbox_support(){
+		var test = document.createElement('div').style;
+		if (test.flex) return true;
+		for (var i = prefixes.length - 1; i >= 0; i--) {
+			if (test[prefixes[i]+'Flex']!=undefined) return true;
+		};
+		return false;
+	}
 	$.fn.md_datepicker = function(options) {
 		"use strict";
-		if (document.createElement('div').style.flex==undefined) {
+		if (!flexbox_support()) {
 			return $(this).each(function(index, el) {
 				try {
 					el.type = 'date';
@@ -115,7 +123,7 @@
 			timestamp.type = 'hidden';
 			timestamp.className = '';
 			timestamp.output = this;
-			this.readOnly =true;
+			this.readOnly = true;
 			timestamp.id = this.id+'-timestamp';
 			if (settings.submit=='timestamp') {
 				this.name ="";
