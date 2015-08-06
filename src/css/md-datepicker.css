@@ -785,11 +785,7 @@ circle.lolliclock-canvas-fg {
 	transition: all .25s cubic-bezier(.55,0,.1,1);
 }
 
-.md-select-wrap>.disabled {
-	pointer-events: none;
-	opacity: .5;
-}
-
+.md-select-wrap>.disabled,
 .md-week>.disabled {
 	opacity: .3;
 	pointer-events: none;
@@ -797,5 +793,5 @@ circle.lolliclock-canvas-fg {
 
 i.disabled {
 	pointer-events: none;
-	color: rgba(170, 170, 170, 0.5);
+	color: rgba(170, 170, 170, .3);
 }
