@@ -2,16 +2,33 @@
 	locale = {
 		en: {
 			month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-			weekday: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+			weekday: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+			_button: {
+				_clean:'delete',
+				_cancel:'cancel'
+			}
 		},
 		de: {
 			month: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
-			weekday: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+			weekday: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+			_button: {
+				_clean:'Löschen',
+				_cancel:'Abrrechen'
+			}
 		}
 	};
 (function ( $, window, document, undefined ) {
 	$.fn.md_datepicker = function(options) {
 		"use strict";
+		if (document.createElement('div').style.flex==undefined) {
+			return $(this).each(function(index, el) {
+				try {
+					el.type = 'date';
+				} catch (err){
+					el.type = 'text';
+				}
+			});
+		}
 		function createSvgElement(name) {
 			return document.createElementNS(svgNS, name);
 		}
@@ -45,6 +62,7 @@
 		mousedownEvent = 'mousedown' + ( touchSupported ? ' touchstart' : ''),
 		mousemoveEvent = 'mousemove.lolliclock' + ( touchSupported ? ' touchmove.lolliclock' : ''),
 		mouseupEvent = 'mouseup.lolliclock' + ( touchSupported ? ' touchend.lolliclock' : ''),
+		transitionend = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd',
 		today = new Date(),
 		settings = $.extend( {}, defaults, options ),
 		weekdaynumber = [0,1,2,3,4,5,6],
@@ -64,7 +82,7 @@
 		if (localesupport) {
 			for (var i = 0,temp_day, day_array = []; i < 7; i++) {
 				temp_day = new Date(2015, 1, i);
-				day_array[temp_day.g()] = temp_day.toLocaleString(settings.language, {weekday: 'short'}).replace(".","")
+				day_array[temp_day.getDateParts().weekday] = temp_day.toLocaleString(settings.language, {weekday: 'short'}).replace(".","")
 			};
 			for (var i = 0,temp_day, month_array = []; i < 12; i++) {
 				temp_day = new Date(2015, i, 1);
@@ -87,8 +105,8 @@
 			month_template+='<span data-month="'+i+'">'+month_array[i]+'</span>';
 		});
 
-		for (var i = 0,temp_day, year_template="", today_year = today.g(1); i < 100; i++) {
-			year_template+='<span>'+(today_year-i)+'</span>'
+		for (var i = 1,temp_day, year_template="", max = 100, today_year = today.getDateParts().year; i < max+2; i++) {
+			year_template+='<span>'+(today_year-(i-(max+2)/2))+'</span>'
 		};
 
 		var submit_values = $(this);
@@ -333,8 +351,8 @@
 		((settings.timepicker) ? timepicker:'')+
 		'</div>'+
 		'<div class="md-buttons">'+
-		'<div class="md-button-flat button-delete">Löschen</div>'+
-		'<div class="md-button-flat button-cancel">Abbrechen</div>'+
+		'<div class="md-button-flat button-delete">'+locale[settings.language.split('-')[0]]._button._clean+'</div>'+
+		'<div class="md-button-flat button-cancel">'+locale[settings.language.split('-')[0]]._button._cancel+'</div>'+
 		'<div class="md-button-flat button-ok">OK</div>'+
 		'</div>'+
 		'</div>';
@@ -399,11 +417,12 @@
 			return pos;
 		}
 		this.show = function(input){
-			var date_str = (input.value!='') ? (settings.format) ?  moment(input.value, settings.format) : moment(input.value) : moment(),
+			proxy.set = (proxy.start==input) ? 'start' : 'end';
+
+			var date_str = (input.value!='') ? (settings.format) ?  moment(input.value, settings.format) : moment(input.value) : moment((proxy.set=='start') ? proxy.end.date : proxy.start.date),
 				pos 	 = locate(input);
 
 			proxy.date = new Date(date_str);
-			proxy.set = (proxy.start==input) ? 'start' : 'end';
 			proxy.date = (isNaN(proxy.date.getTime())) ? new Date() : proxy.date;
 			proxy.range = validRange();
 			proxy.el.prev_next_btns.removeClass('disabled');
@@ -414,18 +433,18 @@
 			update_view();
 
 			if (settings.animated) {
-				proxy.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(){
+				proxy.on(transitionend, function(){
 					proxy.addClass('animate');
-					proxy.off('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd')
+					proxy.off(transitionend)
 				});
 				if (proxy.hasClass('clockpicker')) {
 					proxy.removeClass('clockpicker');
-					proxy.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', '.md-datepicker-views', function(event) {
+					proxy.on(transitionend, '.md-datepicker-views', function(event) {
 						event.preventDefault();
 							$(proxy).css({
 								top: pos.top,
 								left: pos.left
-							}).off('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd')
+							}).off(transitionend)
 					});
 				} else {
 					$(proxy).css({
@@ -443,7 +462,7 @@
 			proxy.el.buttons.on('click', '.button-ok', function(event) {
 				event.preventDefault();
 				if ($(input).is('[type=date]')) {
-					$(input).val(proxy.date.g(1)+'-'+(proxy.date.g(2)+1).pad(2)+'-'+proxy.date.g(3).pad(2)).change();
+					$(input).val(proxy.date.getDateParts().year+'-'+(proxy.date.getDateParts().month+1).pad(2)+'-'+proxy.date.getDateParts().day.pad(2)).change();
 				} else if (settings.format) {
 					$(input).val(moment(proxy.date).format(settings.format)).change();
 				} else if (settings.timepicker) {
@@ -488,11 +507,13 @@
 		var update_view = function(){
 			if (validRange()) {
 				var select = (proxy.set=='start') ? 'end':'start';
-				var elem = $('.md-select-wrap>span:matches('+proxy[select].date.g(1)+')')
+				var elem = $('.md-select-wrap>span:matches('+proxy[select].date.getDateParts().year+')')
 
-				if (proxy.start.date&&proxy.start.date.g(1)==proxy.date.g(1)&&select=='start'||proxy.end.date&&proxy.end.date.g(1)==proxy.date.g(1)&&select=='end'){
-					$(proxy.el.prev_next_btns[proxy.set=='start'|0]).toggleClass('disabled', proxy[select].date.g(2)==proxy.date.g(2));
-					elem.push(($('.md-select-wrap>span[data-month='+proxy[select].date.g(2)+']'))[0]);
+				if (proxy.start.date&&proxy.start.date.getDateParts().year<=proxy.date.getDateParts().year&&select=='start'||proxy.end.date&&proxy.end.date.getDateParts().year>=proxy.date.getDateParts().year&&select=='end'){
+					$(proxy.el.prev_next_btns[proxy.set=='start'|0]).toggleClass('disabled', proxy.date.getDateParts().year==proxy[select].date.getDateParts().year&&proxy[select].date.getDateParts().month==proxy.date.getDateParts().month);
+					if (proxy.date.getDateParts().year==proxy[select].date.getDateParts().year) {
+						elem.push(($('.md-select-wrap>span[data-month='+proxy[select].date.getDateParts().month+']'))[0]);
+					}
 					proxy.find('.md-select-wrap>span').removeClass('disabled');
 					if (proxy.set=='end') {
 						$(elem[1]).prevAll().addClass('disabled');
@@ -507,19 +528,19 @@
 			}
 
 			proxy.el.months.text(proxy.date.loc(settings.language, {month: 'long'}));
-			proxy.el.years.text(proxy.date.g(1));
-			proxy.el.days.text(proxy.date.g(3));
+			proxy.el.years.text(proxy.date.getDateParts().year);
+			proxy.el.days.text(proxy.date.getDateParts().day);
 			proxy.el.weekday.text(proxy.date.loc(settings.language, {weekday: 'short'}).replace(".",""));
 
 			if (settings.timepicker) {
 				proxy.removeClass('minute');
 				proxy.currentView = "hours";
 
-				proxy.toggleClass('pm', proxy.date.g(4)>=12);
-				proxy.el.hour.text(proxy.date.g(4).pad(2));
-				proxy.el.minute.text(proxy.date.g(5).pad(2));
+				proxy.toggleClass('pm', proxy.date.getDateParts().hours>=12);
+				proxy.el.hour.text(proxy.date.getDateParts().hours.pad(2));
+				proxy.el.minute.text(proxy.date.getDateParts().minutes.pad(2));
 
-	      		var radian = (proxy.date.g(4)) * (Math.PI / 6),
+	      		var radian = (proxy.date.getDateParts().hours) * (Math.PI / 6),
 				x = Math.sin(radian) * radius,
 				y = -Math.cos(radian) * radius;
 				setHand(x, y);
@@ -534,25 +555,25 @@
 			setHand(x, y);
 		}
 		var show_select = function(view){
-			var elem = (view=='year') ? $('.md-select-wrap>span:matches('+proxy.date.g(1)+')') : $('.md-select-wrap>span[data-month='+proxy.date.g(2)+']');
+			var elem = (view=='year') ? $('.md-select-wrap>span:matches('+proxy.date.getDateParts().year+')') : $('.md-select-wrap>span[data-month='+proxy.date.getDateParts().month+']');
 			if (!elem.length) {
-				var run = proxy.date.g(1)-Number(proxy.el.select_year.children(':first-child').text());
+				var run = proxy.date.getDateParts().year-Number(proxy.el.select_year.children(':first-child').text());
 				for (var i = 1, lastyear=Number(proxy.el.select_year.children(':first-child').text()); i <= run; i++) {
 					proxy.el.select_year.prepend('<span>'+(lastyear+i)+'</span>');
 				};
-				elem = $('.md-select-wrap>span:matches('+proxy.date.g(1)+')');
+				elem = $('.md-select-wrap>span:matches('+proxy.date.getDateParts().year+')');
 			};
 			var offset = elem.position().top;
 
 			proxy.el['select_'+view].children('span').removeClass('md-currentdate')
-			if (view=='year') $('.md-select-wrap>span:matches('+proxy.date.g(1)+')').addClass('md-currentdate');
-			else $('.md-select-wrap>span[data-month='+proxy.date.g(2)+']').addClass('md-currentdate');
+			if (view=='year') $('.md-select-wrap>span:matches('+proxy.date.getDateParts().year+')').addClass('md-currentdate');
+			else $('.md-select-wrap>span[data-month='+proxy.date.getDateParts().month+']').addClass('md-currentdate');
 
 			proxy.el['select_'+view].addClass('inview animate');
 	        proxy.el['select_'+view].stop().animate({
         		scrollTop: offset+proxy.el['select_'+view][0].scrollTop-(proxy.el['select_'+view][0].clientHeight-48)/2
         	}, parseInt(Math.abs(offset.remap(0,2000,500,3000))), 'easeInOutExpo');
-			proxy.el['select_'+view].on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(){
+			proxy.el['select_'+view].on(transitionend, function(){
 				proxy.el['select_'+view].removeClass('animate');
 			});
 			proxy.el['select_'+view].on('mousewheel', function(event) {
@@ -560,7 +581,7 @@
 			});
 		};
 		var changeMonth = function(direction){
-			var animate = (proxy.range) ? (direction=="next") ? (proxy.set=='start'&&proxy.date.g(2)<proxy.end.date.g(2)||proxy.set=='start'&&proxy.date.g(1)!=proxy.end.date.g(1)||proxy.set=='end') : (proxy.set=='end'&&proxy.date.g(2)>proxy.start.date.g(2)||proxy.set=='end'&&proxy.date.g(1)!=proxy.start.date.g(1)||proxy.set=='start'): true;
+			var animate = (proxy.range) ? (direction=="next") ? (proxy.set=='start'&&proxy.date.getDateParts().month<proxy.end.date.getDateParts().month||proxy.set=='start'&&proxy.date.getDateParts().year!=proxy.end.date.getDateParts().year||proxy.set=='end') : (proxy.set=='end'&&proxy.date.getDateParts().month>proxy.start.date.getDateParts().month||proxy.set=='end'&&proxy.date.getDateParts().year!=proxy.start.date.getDateParts().year||proxy.set=='start'): true;
 			var select = (proxy.set=='start') ? 'end':'start';
 
 			if (animate) {
@@ -568,9 +589,9 @@
 				proxy.el.month_wrap.addClass('animate '+ direction);
 
 				if (direction=="next") {
-					proxy.date.setMonth(proxy.date.g(2)+1);
+					proxy.date.setMonth(proxy.date.getDateParts().month+1);
 				} else {
-					proxy.date.setMonth(proxy.date.g(2)-1);
+					proxy.date.setMonth(proxy.date.getDateParts().month-1);
 				}
 
 				if (proxy.range&&proxy.set=='start'&&proxy.end.date<=proxy.date||proxy.range&&proxy.set=='end'&&proxy.start.date>=proxy.date) {
@@ -579,12 +600,12 @@
 				}
 				update_view();
 
-				proxy.el.month_wrap.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(){
+				proxy.el.month_wrap.on(transitionend, function(){
 					proxy.el.current.html(proxy.el[direction].html());
 					proxy.el.month_wrap.removeClass('animate '+ direction);
 					createMonthview('next');
 					createMonthview('previous');
-					proxy.el.month_wrap.off('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd');
+					proxy.el.month_wrap.off(transitionend);
 					proxy.el.prev_next_btns.on('click', prev_next);
 				});
 			};
@@ -592,19 +613,19 @@
 		var updateMonthviews = function(){
 			var view = ['next', 'previous'];
 			for (var i = view.length - 1; i >= 0; i--) {
-				console.log(proxy.el[view[i]])
 				proxy.el[view[i]].find('.md-selecteddate').removeClass('md-selecteddate');
-				proxy.el[view[i]].find('span:matches('+proxy.date.g(3)+')').addClass('md-selecteddate');
+				proxy.el[view[i]].find('span:matches('+proxy.date.getDateParts().day+')').addClass('md-selecteddate');
 			};
 		}
 
 		function validRange(){
 			if (proxy.start&&proxy.end) {
+				console.log(proxy)
 				return (proxy.date!=undefined&&proxy[((proxy.set=='start')?'end':'start')].date!=undefined);
 			} else return false;
 		}
 		var createMonthview = function(view) {
-			var month = proxy.date.g(2),
+			var month = proxy.date.getDateParts().month,
 				tempdate = new Date(proxy.date),
 				startday, days = "", classes;
 
@@ -619,19 +640,19 @@
 				days+="<span></span>";
 			};
 			// (isNaN(proxy.date.getTime()))
-			var isSameYearMonth = (today.g(2)==tempdate.g(2)&&today.g(1)==tempdate.g(1)),
+			var isSameYearMonth = (today.getDateParts().month==tempdate.getDateParts().month&&today.getDateParts().year==tempdate.getDateParts().year),
 				setting 		= (proxy.set=='start') ? 'end':'start';
-			if (proxy.range) var isSameStartEnd 	= (tempdate.g(2)==proxy[setting].date.g(2)&&tempdate.g(1)==proxy[setting].date.g(1));
+			if (proxy.range) var isSameStartEnd 	= (tempdate.getDateParts().month==proxy[setting].date.getDateParts().month&&tempdate.getDateParts().year==proxy[setting].date.getDateParts().year);
 			for (var i = 1; i <= dim; i++) {
 				classes = [];
-				if (proxy.date.g(3)==i) classes.push('md-selecteddate');
-				if (today.g(3)==i&&isSameYearMonth) classes.push('md-currentdate');
-				if (proxy.range&&proxy.set=='start'&&i>proxy.end.date.g(3)&&isSameStartEnd||proxy.range&&proxy.set=='end'&&i<proxy.start.date.g(3)&&isSameStartEnd) classes.push('disabled');
+				if (proxy.date.getDateParts().day==i) classes.push('md-selecteddate');
+				if (today.getDateParts().day==i&&isSameYearMonth) classes.push('md-currentdate');
+				if (proxy.range&&proxy.set=='start'&&i>proxy.end.date.getDateParts().day&&isSameStartEnd||proxy.range&&proxy.set=='end'&&i<proxy.start.date.getDateParts().day&&isSameStartEnd) classes.push('disabled');
 
 				days+="<span"+((classes.length>=1) ? ' class="'+classes.join(" ")+'"' : ''  )+" >"+i+"</span>"
 			};
 			proxy.el[view].find('.md-month-display').text(tempdate.loc(settings.language, {month: 'long'}))
-			proxy.el[view].find('.md-year-display').text(tempdate.g(1))
+			proxy.el[view].find('.md-year-display').text(tempdate.getDateParts().year)
 			proxy.el[view].find('.md-week').html(days);
 		};
 		function prev_next() {
@@ -686,7 +707,7 @@
 			};
 			update_view();
 			createMonthview('current');
-			$(this).parents('.md-select-wrap').addClass('animate').removeClass('inview').off('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd');
+			$(this).parents('.md-select-wrap').addClass('animate').removeClass('inview').off(transitionend);
 			createMonthview('previous');
 			createMonthview('next');
 		});
@@ -740,27 +761,26 @@
 			proxy.container = container;
 		})
 	};
-	$.fn.md_datepicker.version =  "1.4.1-dev";
 })( jQuery, window, document );
 
 function daysInMonth(date) {
-    return new Date(date.g(1), date.g(2)+1, 0).g(3);
+    return new Date(date.getDateParts().year, date.getDateParts().month+1, 0).getDateParts().day;
 }
 function startDay(date) {
-    return new Date(date.g(1), date.g(2), 1).g();
+    return new Date(date.getDateParts().year, date.getDateParts().month, 1).getDateParts().weekday;
 }
 
 Number.prototype.remap = function(low1, high1, low2, high2){
 	return low2 + (this - low1) * (high2 - low2) / (high1 - low1)
 }
-Date.prototype.g = function(v){
-	return (v==1)?this.getFullYear():(v==2)?this.getMonth():(v==4)?this.getHours():(v==5)?this.getMinutes():(v==3)?this.getDate():this.getDay();
+Date.prototype.getDateParts = function(){
+	return {year: this.getFullYear(), month: this.getMonth(), hours: this.getHours(), minutes: this.getMinutes(), day: this.getDate(), weekday: this.getDay()};
 };
 Date.prototype.loc = function(lang, options){
 	if (toLocaleStringSupports()) {
 		return this.toLocaleString(lang, options);
 	} else {
-		return locale[lang.split('-')[0]][Object.keys(options)[0]][this.g((options.weekday) ? 0 : 2)];
+		return locale[lang.split('-')[0]][Object.keys(options)[0]][this.getDateParts()[Object.keys(options)]];
 	}
 };
 Number.prototype.pad = function(size) {

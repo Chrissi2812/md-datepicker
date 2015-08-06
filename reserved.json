@@ -1,0 +1,4 @@
+{
+  "vars": [ "$", "require", "exports" ],
+  "props": [ "md_datepicker", "start", "end", "matches", "children", "current", "previous", "next", "select_year", "select_month", "de", "en","language", "theme", "timepicker", "startday", "autoclose", "mindate", "maxdate", "color", "_24h", "format", "animated", "submit", "custom_class", "year", "month", "hours", "minutes", "day", "weekday" ]
+}
