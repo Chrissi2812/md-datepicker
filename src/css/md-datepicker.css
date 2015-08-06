@@ -258,7 +258,7 @@ span.weekday:after {
 	pointer-events: none;
 }
 
-.md-light .md-select-wrap{
+.md-datepicker .md-select-wrap{
 	color:#222;
 }
 
@@ -330,7 +330,10 @@ i.md-toggle-state {
 }
 .md-datepicker.md-dark:before,
 .md-datepicker.md-dark>div:not(:first-child),
-.md-datepicker.md-dark .md-select-wrap {
+.md-datepicker.md-dark .md-select-wrap,
+.md-dark .md-datepicker:before,
+.md-dark .md-datepicker>div:not(:first-child),
+.md-dark .md-datepicker .md-select-wrap {
 	background-color: #424242;
 }
 .md-datepicker-views {
@@ -470,6 +473,7 @@ circle.lolliclock-canvas-fg {
 	background: #424242;
 }
 
+.md-dark .md-select-wrap,
 .md-dark .md-week {
 	color: #FFF;
 }
