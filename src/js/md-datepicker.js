@@ -189,7 +189,7 @@
 			'<span class="md-pm">PM</span>'+
 			'</div>'+
 			'</div>'+
-			'<i class="md-toggle-state no-hover">event</i>'+
+			'<i class="md-toggle-state no-hover">&#xE878</i>'+
 			'</div>'+
 			'<div class="md-clock">'+
 				'<div class="md-hours">'+hour_tmpl+'</div>'+
@@ -301,10 +301,10 @@
 		'<div class="md-datepicker-headline">'+
 		'<span class="weekday"></span><span class="day"></span> <span class="month"></span>'+
 		'</div>'+
-		((settings.timepicker) ? '<i class="md-toggle-state no-hover">access_time</i>':'')+
+		((settings.timepicker) ? '<i class="md-toggle-state no-hover">&#xE192;</i>':'')+
 		'</div>'+
 		'<div class="md-datepick-month">'+
-		'<i class="md-previous md-touchtarget no-hover">navigate_before</i><i class="md-next md-touchtarget no-hover">navigate_next</i>'+
+		'<i class="md-previous md-touchtarget no-hover">&#xE408;</i><i class="md-next md-touchtarget no-hover">&#xE409;</i>'+
 		'</div>'+
 		'<div class="md-months">'+
 		'<div class="md-previous-month md-month">'+
