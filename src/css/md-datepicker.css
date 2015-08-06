@@ -588,6 +588,34 @@ circle.lolliclock-canvas-fg {
 	stroke: #2196F3;
 }
 
+.md-light_blue .md-datepick-header,
+.md-light_blue .md-selecteddate:before {
+	background: #03A9F4;
+}
+
+.md-light_blue span.md-currentdate:not(.md-selecteddate),
+.md-light_blue .md-buttons {
+	color: #03A9F4;
+}
+.md-light_blue svg.lolliclock-svg {
+	fill: #03A9F4;
+	stroke: #03A9F4;
+}
+
+.md-cyan .md-datepick-header,
+.md-cyan .md-selecteddate:before {
+	background: #00BCD4;
+}
+
+.md-cyan span.md-currentdate:not(.md-selecteddate),
+.md-cyan .md-buttons {
+	color: #00BCD4;
+}
+.md-cyan svg.lolliclock-svg {
+	fill: #00BCD4;
+	stroke: #00BCD4;
+}
+
 .md-teal .md-datepick-header,
 .md-teal .md-selecteddate:before {
 	background: #009688;
@@ -633,6 +661,36 @@ circle.lolliclock-canvas-fg {
 	stroke: #8BC34A;
 }
 
+.md-lime .md-datepick-header,
+.md-lime .md-selecteddate:before {
+	background: #CDDC39;
+}
+
+.md-lime span.md-currentdate:not(.md-selecteddate),
+.md-lime .md-buttons {
+	color: #CDDC39;
+}
+
+.md-lime svg.lolliclock-svg {
+	fill: #CDDC39;
+	stroke: #CDDC39;
+}
+
+.md-yellow .md-datepick-header,
+.md-yellow .md-selecteddate:before {
+	background: #FFEB3B;
+}
+
+.md-yellow span.md-currentdate:not(.md-selecteddate),
+.md-yellow .md-buttons {
+	color: #FFEB3B;
+}
+
+.md-yellow svg.lolliclock-svg {
+	fill: #FFEB3B;
+	stroke: #FFEB3B;
+}
+
 .md-amber .md-datepick-header,
 .md-amber .md-selecteddate:before {
 	background: #FFC107;
@@ -663,6 +721,36 @@ circle.lolliclock-canvas-fg {
 	stroke: #FF9800;
 }
 
+.md-deep_orange .md-datepick-header,
+.md-deep_orange .md-selecteddate:before {
+	background: #FF5722;
+}
+
+.md-deep_orange span.md-currentdate:not(.md-selecteddate),
+.md-deep_orange .md-buttons {
+	color: #FF5722;
+}
+
+.md-deep_orange svg.lolliclock-svg {
+	fill: #FF5722;
+	stroke: #FF5722;
+}
+
+.md-brown .md-datepick-header,
+.md-brown .md-selecteddate:before {
+	background: #795548;
+}
+
+.md-brown span.md-currentdate:not(.md-selecteddate),
+.md-brown .md-buttons {
+	color: #795548;
+}
+
+.md-brown svg.lolliclock-svg {
+	fill: #795548;
+	stroke: #795548;
+}
+
 .md-grey .md-datepick-header,
 .md-grey .md-selecteddate:before {
 	background: #9E9E9E;
@@ -678,17 +766,17 @@ circle.lolliclock-canvas-fg {
 	stroke: #9E9E9E;
 }
 
-.md-blue_grey .md-datepick-header,
-.md-blue_grey .md-selecteddate:before {
+.md-cyan_grey .md-datepick-header,
+.md-cyan_grey .md-selecteddate:before {
 	background: #607D8B;
 }
 
-.md-blue_grey span.md-currentdate:not(.md-selecteddate),
-.md-blue_grey .md-buttons {
+.md-cyan_grey span.md-currentdate:not(.md-selecteddate),
+.md-cyan_grey .md-buttons {
 	color: #607D8B;
 }
 
-.md-blue_grey svg.lolliclock-svg {
+.md-cyan_grey svg.lolliclock-svg {
 	fill: #607D8B;
 	stroke: #607D8B;
 }
@@ -703,7 +791,7 @@ circle.lolliclock-canvas-fg {
 }
 
 .md-week>.disabled {
-	opacity: .5;
+	opacity: .3;
 	pointer-events: none;
 }
 
