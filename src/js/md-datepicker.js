@@ -3,17 +3,17 @@
 		en: {
 			month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 			weekday: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-			_button: {
-				_clean:'delete',
-				_cancel:'cancel'
+			Button: {
+				Clean:'delete',
+				Cancel:'cancel'
 			}
 		},
 		de: {
 			month: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
 			weekday: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
-			_button: {
-				_clean:'Löschen',
-				_cancel:'Abrrechen'
+			Button: {
+				Clean:'Löschen',
+				Cancel:'Abrrechen'
 			}
 		}
 	},prefixes=["moz", "ms", "webkit", "o"];
@@ -119,43 +119,43 @@
 
 		var submit_values = $(this);
 		submit_values.each(function() {
-			var timestamp = this.cloneNode(true);
-			timestamp.type = 'hidden';
-			timestamp.className = '';
-			timestamp.output = this;
+			var Timestamp = this.cloneNode(true);
+			Timestamp.type = 'hidden';
+			Timestamp.className = '';
+			Timestamp.output = this;
 			this.readOnly = true;
-			timestamp.id = this.id+'-timestamp';
+			Timestamp.id = this.id+'-timestamp';
 			if (settings.submit=='timestamp') {
 				this.name ="";
 			} else {
-				timestamp.name ="";
+				Timestamp.name ="";
 			}
-			this.timestamp = timestamp;
-			this.parentNode.appendChild(timestamp);
+			this.Timestamp = Timestamp;
+			this.parentNode.appendChild(Timestamp);
 			this.onchange = function(e){
 				if (this.value!='') {
-					this.timestamp.value = moment(this.value, settings.format).unix();
+					this.Timestamp.value = moment(this.value, settings.format).unix();
 					this.date = new Date(moment(this.value, settings.format).unix());
 				}
 				else {
-					this.timestamp.value = 0;
-					this.timestamp.date = undefined;
+					this.Timestamp.value = 0;
+					this.Timestamp.date = undefined;
 				}
 			}
-			this.timestamp.onchange = function(e){
-				var timestamp_value = Number(this.value*1000),
-				old_function = timestamp.output.onchange;
-				timestamp.output.onchange = null;
+			this.Timestamp.onchange = function(e){
+				var Timestamp_value = Number(this.value*1000),
+				old_function = Timestamp.output.onchange;
+				Timestamp.output.onchange = null;
 
 				if (this.value=='') {
-					timestamp.output.value = '';
-					timestamp.output.date = undefined;
+					Timestamp.output.value = '';
+					Timestamp.output.date = undefined;
 				} else {
-					timestamp.output.value = moment(timestamp_value).format(settings.format);
-					timestamp.output.date = new Date(timestamp_value);
+					Timestamp.output.value = moment(Timestamp_value).format(settings.format);
+					Timestamp.output.date = new Date(Timestamp_value);
 				}
-				$(timestamp.output).change();
-				timestamp.output.onchange = old_function;
+				$(Timestamp.output).change();
+				Timestamp.output.onchange = old_function;
 			}
 		});
 
@@ -359,8 +359,8 @@
 		((settings.timepicker) ? timepicker:'')+
 		'</div>'+
 		'<div class="md-buttons">'+
-		'<div class="md-button-flat button-delete">'+locale[settings.language.split('-')[0]]._button._clean+'</div>'+
-		'<div class="md-button-flat button-cancel">'+locale[settings.language.split('-')[0]]._button._cancel+'</div>'+
+		'<div class="md-button-flat button-delete">'+locale[settings.language.split('-')[0]].Button.Clean+'</div>'+
+		'<div class="md-button-flat button-cancel">'+locale[settings.language.split('-')[0]].Button.Cancel+'</div>'+
 		'<div class="md-button-flat button-ok">OK</div>'+
 		'</div>'+
 		'</div>';

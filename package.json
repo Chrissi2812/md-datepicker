@@ -26,7 +26,7 @@
   "devDependencies": {
     "autoprefixer": "latest",
     "cssmin": "latest",
-    "uglify-js2": "latest",
+    "uglify-js": "latest",
     "uglifyjs-folder": "latest"
   }
 }
