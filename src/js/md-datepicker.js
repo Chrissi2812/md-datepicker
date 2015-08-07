@@ -114,16 +114,16 @@
 			month_template+='<span data-month="'+i+'">'+month_array[i]+'</span>';
 		});
 
-		var max = 100,
-			start = (settings.mindate.search(/^[-+]/)) ? moment(settings.mindate) : moment().add(settings.mindate, 'y'),
-			end = (settings.maxdate.search(/^[-+]/)) ? moment(settings.maxdate) : moment().add(settings.maxdate, 'y');
+		var max 	= 100,
+			start 	= (settings.mindate && settings.mindate.search(/^[-+]/)) ? moment(settings.mindate) : moment().add(settings.mindate, 'y'),
+			end 	= (settings.maxdate && settings.maxdate.search(/^[-+]/)) ? moment(settings.maxdate) : moment().add(settings.maxdate, 'y');
 		if (settings.mindate&&settings.maxdate) {
-			max = moment.duration(end-start).years();
+			max 	= moment.duration(end-start).years();
 			settings.range = "calculated";
 		} else if (settings.mindate&&settings.range=="past") {
-			max = moment.duration(today-start).years();
+			max 	= moment.duration(today-start).years();
 		} else if (settings.maxdate&&settings.range=="future") {
-			max = moment.duration(end-today).years();
+			max 	= moment.duration(end-today).years();
 		};
 		console.log(max,start,(!!settings.maxdate.search(/^[-+]/)))
 		for (var i = 0,temp_day, year_template="", range = settings.range, today_year = today.getDateParts().year; i <= max; i++) {
