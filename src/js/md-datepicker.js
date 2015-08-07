@@ -58,6 +58,7 @@
 			autoclose: false,
 			mindate: null,
 			maxdate: null,
+			range: 'past',
 			color: null,
 			_24h:false,
 			format: null,
@@ -113,8 +114,20 @@
 			month_template+='<span data-month="'+i+'">'+month_array[i]+'</span>';
 		});
 
-		for (var i = 1,temp_day, year_template="", max = 100, today_year = today.getDateParts().year; i < max+2; i++) {
-			year_template+='<span>'+(today_year-(i-(max+2)/2))+'</span>'
+		var max = 100,
+			start = (settings.mindate.search(/^[-+]/)) ? moment(settings.mindate) : moment().add(settings.mindate, 'y'),
+			end = (settings.maxdate.search(/^[-+]/)) ? moment(settings.maxdate) : moment().add(settings.maxdate, 'y');
+		if (settings.mindate&&settings.maxdate) {
+			max = moment.duration(end-start).years();
+			settings.range = "calculated";
+		} else if (settings.mindate&&settings.range=="past") {
+			max = moment.duration(today-start).years();
+		} else if (settings.maxdate&&settings.range=="future") {
+			max = moment.duration(end-today).years();
+		};
+		console.log(max,start,(!!settings.maxdate.search(/^[-+]/)))
+		for (var i = 0,temp_day, year_template="", range = settings.range, today_year = today.getDateParts().year; i <= max; i++) {
+			year_template+='<span>'+((range=='future') ? today_year+max-i : (range=='past') ? today_year-i : (range=='calculated') ? end.year()-i : today_year-(i-(max-max%2)/2))+'</span>'
 		};
 
 		var submit_values = $(this);
@@ -227,7 +240,7 @@
 
 			// Draw clock SVG
 			var svg = createSvgElement('svg').setProperties({
-					class:'lolliclock-svg',
+					'class':'lolliclock-svg',
 					width:diameter,
 					height:diameter
 				}),
@@ -235,7 +248,7 @@
 					transform:'translate(' + dialRadius + ',' + dialRadius + ')'
 				}),
 				bearing = createSvgElement('circle').setProperties({
-					class:'lolliclock-bearing',
+					'class':'lolliclock-bearing',
 					cx:0,
 					cy:0,
 					r:5
@@ -245,11 +258,11 @@
 					y1:0
 				}),
 				bg = createSvgElement('circle').setProperties({
-					class:'lolliclock-canvas-bg',
+					'class':'lolliclock-canvas-bg',
 					r:20
 				}),
 				fg = createSvgElement('circle').setProperties({
-					class:'lolliclock-canvas-fg',
+					'class':'lolliclock-canvas-fg',
 					r:3.5
 				});
 
