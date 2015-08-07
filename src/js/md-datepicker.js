@@ -20,7 +20,7 @@
 (function ( $, window, document, undefined ) {
 	function flexbox_support(){
 		var test = document.createElement('div').style;
-		if (test.flex) return true;
+		if (test.flex!=undefined) return true;
 		for (var i = prefixes.length - 1; i >= 0; i--) {
 			if (test[prefixes[i]+'Flex']!=undefined) return true;
 		};
@@ -123,8 +123,8 @@
 			Timestamp.type = 'hidden';
 			Timestamp.className = '';
 			Timestamp.output = this;
-			this.readOnly = true;
 			Timestamp.id = this.id+'-timestamp';
+			this.readOnly = true;
 			if (settings.submit=='timestamp') {
 				this.name ="";
 			} else {
@@ -226,32 +226,38 @@
 
 
 			// Draw clock SVG
-			var svg = createSvgElement('svg');
-			svg.setAttribute('class', 'lolliclock-svg');
-			svg.setAttribute('width', diameter);
-			svg.setAttribute('height', diameter);
-			var g = createSvgElement('g');
-			g.setAttribute('transform', 'translate(' + dialRadius + ',' + dialRadius + ')');
-			var bearing = createSvgElement('circle');
-			bearing.setAttribute('class', 'lolliclock-bearing');
-			bearing.setAttribute('cx', 0);
-			bearing.setAttribute('cy', 0);
-			bearing.setAttribute('r', 5);
-			var hand = createSvgElement('line');
-			hand.setAttribute('x1', 0);
-			hand.setAttribute('y1', 0);
-			var bg = createSvgElement('circle');
-			bg.setAttribute('class', 'lolliclock-canvas-bg');
-			bg.setAttribute('r', 20);
-			var fg = createSvgElement('circle');
-			fg.setAttribute('class', 'lolliclock-canvas-fg');
-			fg.setAttribute('r', 3.5);
+			var svg = createSvgElement('svg').setProperties({
+					class:'lolliclock-svg',
+					width:diameter,
+					height:diameter
+				}),
+				g = createSvgElement('g').setProperties({
+					transform:'translate(' + dialRadius + ',' + dialRadius + ')'
+				}),
+				bearing = createSvgElement('circle').setProperties({
+					class:'lolliclock-bearing',
+					cx:0,
+					cy:0,
+					r:5
+				}),
+				hand = createSvgElement('line').setProperties({
+					x1:0,
+					y1:0
+				}),
+				bg = createSvgElement('circle').setProperties({
+					class:'lolliclock-canvas-bg',
+					r:20
+				}),
+				fg = createSvgElement('circle').setProperties({
+					class:'lolliclock-canvas-fg',
+					r:3.5
+				});
+
 			g.appendChild(hand);
 			g.appendChild(bg);
 			g.appendChild(fg);
 			g.appendChild(bearing);
 			svg.appendChild(g);
-
 
 			var mousedown = function (e) {
 				var offset = canvas.offset(),
@@ -411,12 +417,18 @@
 			// Set clock hand and others' position
 			var cx = Math.sin(radian) * radius,
 			cy = -Math.cos(radian) * radius;
-			proxy.hand.setAttribute('x2', Math.sin(radian) * (radius - tickRadius));
-			proxy.hand.setAttribute('y2', -Math.cos(radian) * (radius - tickRadius));
-			proxy.bg.setAttribute('cx', cx);
-			proxy.bg.setAttribute('cy', cy);
-			proxy.fg.setAttribute('cx', cx);
-			proxy.fg.setAttribute('cy', cy);
+			proxy.hand.setProperties({
+				x2:Math.sin(radian) * (radius - tickRadius),
+				y2:-Math.cos(radian) * (radius - tickRadius)
+			});
+			proxy.bg.setProperties({
+				cx:cx,
+				cy:cy
+			});
+			proxy.fg.setProperties({
+				cx:cx,
+				cy:cy
+			});
 		};
 		var locate = function(input){
 			var pos = $(input).offset(), width = proxy.width(), height = proxy.height();
@@ -671,13 +683,15 @@
 		if (settings.timepicker) {
 			var canvas = proxy.find('.md-clock');
 			canvas.append(svg);
-			proxy.hand = hand;
-			proxy.bg = bg;
-			proxy.fg = fg;
-			proxy.bearing = bearing;
-			proxy.g = g;
-			proxy.canvas = canvas;
-			proxy.ticks = {};
+			$.extend(proxy, {
+				hand:hand,
+				bg:bg,
+				fg:fg,
+				bearing:bearing,
+				g:g,
+				canvas:canvas,
+				ticks:{}
+			});
 			proxy.ticks.minutes = proxy.canvas.find('.md-minutes>div');
 			proxy.ticks.hours = proxy.canvas.find('.md-hours>div');
 			proxy.el.hour = proxy.find('.md-hour');
@@ -791,16 +805,28 @@ Date.prototype.loc = function(lang, options){
 		return locale[lang.split('-')[0]][Object.keys(options)[0]][this.getDateParts()[Object.keys(options)]];
 	}
 };
+Element.prototype.setProperties = function(props) {
+	'use strict'
+	for (var prop in props) {
+		if (props.hasOwnProperty(prop)) {
+			if (!(this instanceof SVGElement)) {
+				this[prop] = props[prop];
+			}
+			if (this[prop]!=props[prop]) this.setAttribute(prop,props[prop]);
+		}
+	}
+	return this;
+};
 Number.prototype.pad = function(size) {
 	var s = String(this);
 	while (s.length < (size || 2)) {s = "0" + s;}
 	return s;
-}
+};
 String.prototype.pad = function(size) {
 	var s = String(this);
 	while (s.length < (size || 2)) {s = "0" + s;}
 	return s;
-}
+};
 $.expr[':'].matches = $.expr.createPseudo(function(arg) {
     return function( elem ) {
         return $(elem).text().match("^" + arg + "$");
