@@ -59,7 +59,6 @@
 			mindate: null,
 			maxdate: null,
 			range: 'past',
-			color: null,
 			_24h:false,
 			format: null,
 			animated: true,
@@ -121,7 +120,7 @@
 			max 	= moment.duration(end-start).years();
 			settings.range = "calculated";
 		} else if (settings.mindate&&settings.range=="past") {
-			max 	= moment.duration(today-start).years();
+			max 	= moment.duration(today-start).years()+1;
 		} else if (settings.maxdate&&settings.range=="future") {
 			max 	= moment.duration(end-today).years();
 		};
