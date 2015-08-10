@@ -45,6 +45,9 @@ i {
 	font-weight: normal;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+.md-datepicker.hidden{
+	visibility: hidden;
+}
 .md-datepicker:before {
     content: "";
     width: 100%;
@@ -56,7 +59,7 @@ i {
     z-index: -1;
 }
 .md-datepicker-animated {
-	transition: transform .25s cubic-bezier(.55,0,.1,1), opacity .25s cubic-bezier(.55,0,.1,1);
+	transition: transform .25s cubic-bezier(.55,0,.1,1), opacity .25s cubic-bezier(.55,0,.1,1), visibilty .25s cubic-bezier(.55,0,.1,1);
 	transform: scale(0.5);
 	opacity: 0;
 	transform-origin: 0 0;
@@ -75,6 +78,7 @@ i {
 	transform: none;
 	opacity: 1;
 	pointer-events: all;
+	visibility: visible;
 }
 .md-datepick-header {
 	height: 96px;
@@ -787,6 +791,11 @@ circle.lolliclock-canvas-fg {
 
 .md-datepicker.animate {
 	transition: all .25s cubic-bezier(.55,0,.1,1);
+}
+
+.md-datepicker .animate {
+	transition: all .25s cubic-bezier(.55,0,.1,1);
+	pointer-events: none;
 }
 
 .md-select-wrap>.disabled,
