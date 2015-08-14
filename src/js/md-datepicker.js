@@ -203,7 +203,6 @@
 				duration = 350;
 
 			// Build ticks
-
 			// Hours view
 			var hours = (settings._24h) ? 25 : 13;
 			for (var i = 1, hour_tmpl="",radian; i < hours; i++) {
@@ -237,8 +236,7 @@
 				'<div class="md-hours">'+hour_tmpl+'</div>'+
 				'<div class="md-minutes">'+min_tmpl+'</div>'+
 			'</div>'+
-			'</div>',
-			svgNS = 'http://www.w3.org/2000/svg';
+			'</div>';
 
 			var svg = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="lolliclock-svg" width="'+height+'" height="'+height+'" style="transform: rotateZ(0deg);">'+
 			'<g transform="translate('+dialRadius+','+dialRadius+')">'+
@@ -256,7 +254,8 @@
 				dx = (isTouch ? e.originalEvent.touches[0] : e).pageX - x0,
 				dy = (isTouch ? e.originalEvent.touches[0] : e).pageY - y0,
 				z = Math.sqrt(dx * dx + dy * dy),
-				moved = false;
+				moved = false,
+				setTime = false;
 
 				// Ignore plate clicks that aren't even close
 				if (z < radius - tickRadius || z > radius + tickRadius) {
@@ -270,7 +269,7 @@
 
 				// Clock
 				setHand(dx, dy);
-
+				proxy.el.svg.oldRot = proxy.el.svg.lastRot;
 				// Mousemove on document
 				$(document).off(mousemoveEvent).on(mousemoveEvent, function (e) {
 					e.preventDefault();
@@ -283,7 +282,7 @@
 						return;
 					}
 					moved = true;
-					setHand(x, y);
+					setTime = setHand(x, y);
 				});
 
 				// Mouseup on document
@@ -293,9 +292,10 @@
 					x = (isTouch ? e.originalEvent.changedTouches[0] : e).pageX - x0,
 					y = (isTouch ? e.originalEvent.changedTouches[0] : e).pageY - y0;
 					if (x === dx && y === dy) {
-						setHand(x, y);
+						setTime = setHand(x, y);
 					}
-					if (proxy.currentView === 'hours') {
+					console.log(setTime)
+					if (setTime&&proxy.currentView === 'hours') {
 						// this.toggleView('minutes', duration / 2);
 						setTimeout(function() {
 							timepicker_change(true);
@@ -363,26 +363,48 @@
 		'</div>'+
 		'</div>';
 		var setHand = function (x, y) {
-			//Keep radians postive from 1 to 2pi
-			var radian = Math.atan2(-x, y) + Math.PI,
-				isHours = proxy.currentView === 'hours',
-				unit = Math.PI / (isHours ? 6 : 30),
-				value;
+			// Keep radians postive from 1 to 2pi
+			var radian 		= Math.atan2(-x, y) + Math.PI,
+				isHours 	= proxy.currentView === 'hours',
+				unit 		= Math.PI / (isHours ? 6 : 30),
+				// The view we will switch to
+				nextview 	= (isHours) ? 'minutes' : 'hours',
+				thisview	= (isHours) ? 'hours' : 'minutes',
+				// Get the rotation for the next view
+				nextRot 	= ((proxy.date.getDateParts()[nextview]) * (Math.PI / ((!isHours) ? 6 : 30))) * (180/Math.PI)%360,
+				// Get the round value
+				value 		= Math.round(radian / unit),value24,timerange,
+				rotation 	= parseFloat((radian * (180/Math.PI)%360).toFixed(1));
+			// console.log(Math.floor((radian * (180/Math.PI))%360)===0, Math.floor(radian * (180/Math.PI)))
+				// console.log(rotation)
 
-			// Get the round value
-			value = Math.round(radian / unit);
+			value 			= (isHours&&value === 0) ? 12 : value;
+			value24 		= proxy.hasClass('pm')&&isHours ? (value+12==24) ? 12 : (value+12).pad(2) : (value==12) ? '00' : (value).pad(2);
+			// Check if is bigger than end time or smaller than start time
+			timerange 		= (!proxy.range||proxy.set=='start'&&proxy.range&&value24<=proxy.end.date.getDateParts()[thisview]||proxy.range&&value24>=proxy.start.date.getDateParts()[thisview]);
+
+			if (rotation < proxy.currentRot && !(rotation < 0 && proxy.currentRot > 0)) {
+				console.log("clockwise")
+			} else {
+				console.log("anti clockwise")
+			}
+			// console.log(rotation, proxy.currentRot);
+			proxy.clockwise = (rotation < proxy.currentRot && !(rotation < 0 && proxy.currentRot > 0)) ? true : false;
+			proxy.currentRot = rotation;
+
 			// Get the round radian
 			radian = value * unit;
 
+			// Setting lastRot according to distance between currenRot and nextRot
+			proxy.el.svg.lastRot = (proxy.el.svg.currentRot-nextRot>180) ? 360+nextRot : nextRot;
 			// Correct the hours or minutes
 			if (isHours) {
-				if (value === 0) {
-					value = 12;
-				}
+				value = (isHours&&value === 0) ? 12 : value;
 				proxy.fg.style.visibility = 'hidden';
-				proxy.el.hour.text(proxy.hasClass('pm') ? (value+12==24) ? 12 : (value+12).pad(2) : (value==12) ? '00' : (value).pad(2));
-
-				proxy.date.setHours(proxy.el.hour.text());
+				if (timerange) {
+					proxy.el.hour.text(proxy.hasClass('pm') ? (value+12==24) ? 12 : (value+12).pad(2) : (value==12) ? '00' : (value).pad(2));
+					proxy.date.setHours(proxy.el.hour.text());
+				}
 			} else {
 				var isOnNum = (value % 5 === 0);
 				if (isOnNum) {
@@ -393,26 +415,28 @@
 				if (value === 60) {
 					value = 0;
 				}
-				proxy.el.minute.text(value.pad(2));
-				proxy.date.setMinutes(proxy.el.minute.text());
+				if (timerange) {
+					proxy.el.minute.text(value.pad(2));
+					proxy.date.setMinutes(proxy.el.minute.text());
+				}
 			}
-			// Once hours or minutes changed, vibrate the device
-			var ticks = (proxy.currentView=="hours") ? proxy.ticks.hours : proxy.ticks.minutes;
-			ticks.each(function(index, el) {
-				$(el).toggleClass('active', $(el).text()==value);
-			});
+			if (timerange) {
+				// Once hours or minutes changed, vibrate the device
+				var ticks = (proxy.currentView=="hours") ? proxy.ticks.hours : proxy.ticks.minutes;
+				ticks.each(function(index, el) {
+					$(el).toggleClass('active', $(el).text()==value);
+				});
 
-			// Set clock hand and others' position
-			var currentRot 	= radian * (180/Math.PI)%360,
-				calcRot;
+				// Set clock hand and others' position
+				var currentRot 	= radian * (180/Math.PI)%360,
+					calcRot 	= (proxy.el.svg.lastRot-currentRot>180) ? 360+currentRot : currentRot;
 
-			calcRot = (Math.abs(proxy.el.svg.lastRot-currentRot)>180) ? 360+currentRot : currentRot;
-			proxy.el.svg.lastRot = (Math.abs(proxy.el.svg.lastRot-currentRot)>180) ? proxy.el.svg.lastRot+360 : proxy.el.svg.lastRot;
-			console.log('calcRot'+calcRot+' currentRot:'+currentRot+' last:'+proxy.el.svg.lastRot,(Math.abs(proxy.el.svg.lastRot-currentRot)>180))
-			// console.log(proxy.el.svg.lastRot, proxy.el.svg.currentRot, nextRot, Math.abs(proxy.el.svg.currentRot-nextRot)>180)
+				$(proxy.el.svg).css('transform', 'rotateZ('+calcRot+'deg)');
+				// Save the currentRot for next calculation
+				proxy.el.svg.currentRot = calcRot;
 
-			$(proxy.el.svg).css('transform', 'rotateZ('+calcRot+'deg)');
-			proxy.el.svg.currentRot = calcRot;
+				return true;
+			} else return false;
 		};
 		var locate = function(input){
 			// console.log(window.innerWidth, $(window).width(), document)
@@ -557,6 +581,7 @@
 				x = Math.sin(radian) * radius,
 				y = -Math.cos(radian) * radius;
 				proxy.el.svg.lastRot = radian2 * (180/Math.PI);
+				// proxy.el.svg.oldRot = proxy.el.svg.lastRot;
 				proxy.el.svg.currentRot = radian * (180/Math.PI);
 				setHand(x, y);
 				// console.log(proxy.el)
@@ -593,7 +618,7 @@
 			if (view=='year') proxy.el.select_year.find('span:matches('+proxy.date.getDateParts().year+')').addClass('md-currentdate');
 			else proxy.el.select_month.find('span[data-month='+proxy.date.getDateParts().month+']').addClass('md-currentdate');
 
-			proxy.el['select_'+view].addClass('inview animate');
+			if (!proxy.el['select_'+view].hasClass('inview')) proxy.el['select_'+view].addClass('inview animate');
 	        proxy.el['select_'+view].stop().animate({
         		scrollTop: offset+proxy.el['select_'+view][0].scrollTop-(proxy.el['select_'+view][0].clientHeight-48)/2
         	}, parseInt(Math.abs(offset.remap(0,2000,500,3000))), 'easeInOutExpo');
@@ -756,15 +781,17 @@
 		proxy.on('click', '.md-minute, .md-hour', function(event) {
 			timepicker_change(event);
 		});
-		proxy.on('click', '.md-pm, .md-am', function(event) {
-			proxy.toggleClass('pm', !$(event.target).is(".md-am"));
+		proxy.on('click', '.md-pm, .md-am', function() {
+			toggleAM();
+		});
+		function toggleAM(){
+			proxy.toggleClass('pm', !proxy.hasClass("pm"));
 			var value = parseInt(proxy.el.hour.text());
 				value = proxy.hasClass('pm') ? (value+12==24) ? 12 : (value+12) : (value==0) ? 0 : (value-12);
 			proxy.el.hour.text(value.pad(2));
 
 			proxy.date.setHours(value.pad(2));
-		});
-
+		}
 		var that = this,
 			container = [];
 		return this.each(function() {
