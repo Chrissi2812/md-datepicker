@@ -13,7 +13,7 @@
 			weekday: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
 			Button: {
 				Clean:'Löschen',
-				Cancel:'Abrrechen'
+				Cancel:'Abbrechen'
 			}
 		}
 	},prefixes=["moz", "ms", "webkit", "o"];
@@ -54,6 +54,7 @@
 		var defaults = {
 			language: null,
 			theme: 'light',
+			datepicker: true,
 			timepicker: false,
 			startday: 1,
 			autoclose: false,
@@ -135,7 +136,7 @@
 
 		var submit_values = $(this);
 		submit_values.each(function() {
-			var Timestamp = this.cloneNode(true);
+			var Timestamp = document.createElement('input');
 			Timestamp.type = 'hidden';
 			Timestamp.className = '';
 			Timestamp.output = this;
@@ -181,20 +182,10 @@
 
 		if (settings.timepicker) {
 			// Clock size
-			// Lädt die Stylesheets
-			for (var i = document.styleSheets.length - 1; i >= 0; i--) {
-				// sucht nach lolliclock.css
-				if (document.styleSheets[i].href&&document.styleSheets[i].href.indexOf('md-datepicker')>0) {
-					// lade alle Regeln in ein Array
-					var lollicss = document.styleSheets[i].cssRules;
-					for (var i = lollicss.length - 1; i >= 0; i--) {
-						// Loopt solange bis der Selector stimmt.
-						if (lollicss[i].selectorText==".md-clock") {
-							var height = parseInt(lollicss[i].style.height);
-						}
-					};
-				};
-			};
+			var dummy_clock = $('<div class="md-clock" style="visibility: hidden">').appendTo('body'),
+				height = parseInt(dummy_clock.height());
+
+			dummy_clock.remove();
 
 			var dialRadius = height/2,
 				radius = dialRadius - 32,
@@ -254,8 +245,9 @@
 				dx = (isTouch ? e.originalEvent.touches[0] : e).pageX - x0,
 				dy = (isTouch ? e.originalEvent.touches[0] : e).pageY - y0,
 				z = Math.sqrt(dx * dx + dy * dy),
-				moved = false,
-				setTime = false;
+				moved = false;
+
+				if (!cssua.ua.ie) proxy.el.svg.classList.remove('animate');
 
 				// Ignore plate clicks that aren't even close
 				if (z < radius - tickRadius || z > radius + tickRadius) {
@@ -273,7 +265,7 @@
 				// Mousemove on document
 				$(document).off(mousemoveEvent).on(mousemoveEvent, function (e) {
 					e.preventDefault();
-					proxy.el.svg.classList.remove('animate');
+					if (!cssua.ua.ie) proxy.el.svg.classList.remove('animate');
 					var isTouch = /^touch/.test(e.type),
 					x = (isTouch ? e.originalEvent.touches[0] : e).pageX - x0,
 					y = (isTouch ? e.originalEvent.touches[0] : e).pageY - y0;
@@ -282,7 +274,7 @@
 						return;
 					}
 					moved = true;
-					setTime = setHand(x, y);
+					setHand(x, y);
 				});
 
 				// Mouseup on document
@@ -292,10 +284,9 @@
 					x = (isTouch ? e.originalEvent.changedTouches[0] : e).pageX - x0,
 					y = (isTouch ? e.originalEvent.changedTouches[0] : e).pageY - y0;
 					if (x === dx && y === dy) {
-						setTime = setHand(x, y);
+						setHand(x, y);
 					}
-					console.log(setTime)
-					if (setTime&&proxy.currentView === 'hours') {
+					if (proxy.currentView === 'hours') {
 						// this.toggleView('minutes', duration / 2);
 						setTimeout(function() {
 							timepicker_change(true);
@@ -361,7 +352,7 @@
 		'<div class="md-button-flat button-cancel">'+locale[settings.language.split('-')[0]].Button.Cancel+'</div>'+
 		'<div class="md-button-flat button-ok">OK</div>'+
 		'</div>'+
-		'</div>';
+		'</div><div class="md-datepicker__overlay"></div>';
 		var setHand = function (x, y) {
 			// Keep radians postive from 1 to 2pi
 			var radian 		= Math.atan2(-x, y) + Math.PI,
@@ -373,24 +364,8 @@
 				// Get the rotation for the next view
 				nextRot 	= ((proxy.date.getDateParts()[nextview]) * (Math.PI / ((!isHours) ? 6 : 30))) * (180/Math.PI)%360,
 				// Get the round value
-				value 		= Math.round(radian / unit),value24,timerange,
+				value 		= Math.round(radian / unit),
 				rotation 	= parseFloat((radian * (180/Math.PI)%360).toFixed(1));
-			// console.log(Math.floor((radian * (180/Math.PI))%360)===0, Math.floor(radian * (180/Math.PI)))
-				// console.log(rotation)
-
-			value 			= (isHours&&value === 0) ? 12 : value;
-			value24 		= proxy.hasClass('pm')&&isHours ? (value+12==24) ? 12 : (value+12).pad(2) : (value==12) ? '00' : (value).pad(2);
-			// Check if is bigger than end time or smaller than start time
-			timerange 		= (!proxy.range||proxy.set=='start'&&proxy.range&&value24<=proxy.end.date.getDateParts()[thisview]||proxy.range&&value24>=proxy.start.date.getDateParts()[thisview]);
-
-			if (rotation < proxy.currentRot && !(rotation < 0 && proxy.currentRot > 0)) {
-				console.log("clockwise")
-			} else {
-				console.log("anti clockwise")
-			}
-			// console.log(rotation, proxy.currentRot);
-			proxy.clockwise = (rotation < proxy.currentRot && !(rotation < 0 && proxy.currentRot > 0)) ? true : false;
-			proxy.currentRot = rotation;
 
 			// Get the round radian
 			radian = value * unit;
@@ -401,10 +376,8 @@
 			if (isHours) {
 				value = (isHours&&value === 0) ? 12 : value;
 				proxy.fg.style.visibility = 'hidden';
-				if (timerange) {
-					proxy.el.hour.text(proxy.hasClass('pm') ? (value+12==24) ? 12 : (value+12).pad(2) : (value==12) ? '00' : (value).pad(2));
-					proxy.date.setHours(proxy.el.hour.text());
-				}
+				proxy.el.hour.text(proxy.hasClass('pm') ? (value+12==24) ? 12 : (value+12).pad(2) : (value==12) ? '00' : (value).pad(2));
+				proxy.date.setHours(proxy.el.hour.text());
 			} else {
 				var isOnNum = (value % 5 === 0);
 				if (isOnNum) {
@@ -415,34 +388,29 @@
 				if (value === 60) {
 					value = 0;
 				}
-				if (timerange) {
-					proxy.el.minute.text(value.pad(2));
-					proxy.date.setMinutes(proxy.el.minute.text());
-				}
+				proxy.el.minute.text(value.pad(2));
+				proxy.date.setMinutes(proxy.el.minute.text());
 			}
-			if (timerange) {
-				// Once hours or minutes changed, vibrate the device
-				var ticks = (proxy.currentView=="hours") ? proxy.ticks.hours : proxy.ticks.minutes;
-				ticks.each(function(index, el) {
-					$(el).toggleClass('active', $(el).text()==value);
-				});
+			// Once hours or minutes changed, vibrate the device
+			var ticks = (proxy.currentView=="hours") ? proxy.ticks.hours : proxy.ticks.minutes;
+			ticks.each(function(index, el) {
+				$(el).toggleClass('active', $(el).text()==value);
+			});
 
-				// Set clock hand and others' position
-				var currentRot 	= radian * (180/Math.PI)%360,
-					calcRot 	= (proxy.el.svg.lastRot-currentRot>180) ? 360+currentRot : currentRot;
+			// Set clock hand and others' position
+			var currentRot 	= radian * (180/Math.PI)%360,
+				calcRot 	= (proxy.el.svg.lastRot-currentRot>180) ? 360+currentRot : currentRot;
 
-				$(proxy.el.svg).css('transform', 'rotateZ('+calcRot+'deg)');
-				// Save the currentRot for next calculation
-				proxy.el.svg.currentRot = calcRot;
-
-				return true;
-			} else return false;
+			$(proxy.el.svg).css('transform', 'rotateZ('+calcRot+'deg)');
+			// Save the currentRot for next calculation
+			proxy.el.svg.currentRot = calcRot;
 		};
 		var locate = function(input){
 			// console.log(window.innerWidth, $(window).width(), document)
-			var pos = $(input).offset(), width = proxy.width(), height = proxy.height();
+			var pos = $(input).offset(), width = proxy.width(), height = proxy.height(), transform_origin = $(input).offset();
 			pos.top = (pos.top+height+8>=$(window).height()) ? $(window).height()-height-8 : pos.top;
 			pos.left = (pos.left+width+8>=$(window).width()) ? $(window).width()-width-8 : pos.left;
+			pos.transform_origin = (transform_origin.left - pos.left)+'px '+(transform_origin.top - pos.top)+'px';
 			return pos;
 		}
 		this.show = function(input){
@@ -455,7 +423,7 @@
 			// proxy.date = new Date(2015,7,10,5,15);
 			proxy.date = (isNaN(proxy.date.getTime())) ? new Date() : proxy.date;
 			proxy.range = validRange();
-			proxy.removeClass('hidden');
+			proxy.removeClass('invisible');
 			proxy.el.prev_next_btns.removeClass('disabled');
 
 			createMonthview('current');
@@ -474,19 +442,25 @@
 						event.preventDefault();
 							$(proxy).css({
 								top: pos.top,
-								left: pos.left
+								left: pos.left,
+								'transform-origin': pos.transform_origin,
+								'-webkit-transform-origin': pos.transform_origin
 							}).off(transitionend)
 					});
 				} else {
 					$(proxy).css({
 						top: pos.top,
-						left: pos.left
+						left: pos.left,
+						'transform-origin': pos.transform_origin,
+								'-webkit-transform-origin': pos.transform_origin
 					}).addClass('md-datepicker-visible');
 				}
 			} else {
 				$(proxy).css({
 					top: pos.top,
-					left: pos.left
+					left: pos.left,
+					'transform-origin': pos.transform_origin,
+								'-webkit-transform-origin': pos.transform_origin
 				}).addClass('md-datepicker-visible');
 			}
 			proxy.el.buttons.off();
@@ -536,7 +510,7 @@
 			$(window).off('resize.id'+proxy.id_number);
 			proxy.on(transitionend, function(event) {
 				event.preventDefault();
-				proxy.addClass('hidden');
+				proxy.addClass('invisible');
 				proxy.off(transitionend);
 			});
 		}
@@ -595,12 +569,12 @@
 			x = Math.sin(radian) * radius,
 			y = -Math.cos(radian) * radius;
 
-			proxy.el.svg.classList.add('animate');
-			proxy.toggleClass('minute', isHour);
+			if (!cssua.ua.ie) proxy.el.svg.classList.add('animate');
 			$(proxy.el.svg).on(transitionend, function(event) {
 				$(proxy.el.svg).off();
-				proxy.el.svg.classList.remove('animate');
+				if (!cssua.ua.ie) proxy.el.svg.classList.remove('animate');
 			});
+			proxy.toggleClass('minute', isHour);
 			setHand(x, y);
 		}
 		var show_select = function(view){
@@ -707,14 +681,14 @@
 		function prev_next() {
 			changeMonth(this.className.split(' ')[0].split('-')[1]);
 		}
-		var proxy = $(template).appendTo("body");
+		var proxy = $($(template).appendTo("body")[0]);
 		proxy.el = {};
 		proxy.id_number = id;
 		if (settings.timepicker) {
 			var canvas = proxy.find('.md-clock');
 			svg = $(svg).appendTo(canvas)[0];
 			$.extend(proxy, {
-				fg:$(svg).find('.lolliclock-canvas-fg')[0],
+				fg: (cssua.ua.ie)? $(svg).find("[class=\"lolliclock-canvas-fg\"]")[0]:$(svg).find(".lolliclock-canvas-fg")[0],
 				canvas:canvas,
 				ticks:{}
 			});
@@ -870,5 +844,4 @@ function toLocaleStringSupports() {
 		return (e.name==='RangeError');
 	}
 	return false;
-}
-
+};

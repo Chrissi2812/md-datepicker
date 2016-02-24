@@ -7,6 +7,8 @@
     "build:js": "uglifyjs src/js/md-datepicker.js -b beautify=false,max-line-len=0 --screw-ie8 -m \"sort=true,toplevel=true\" --mangle-props --reserve-domprops --reserved-file reserved.json -c \"dead_code=true,drop_debugger=true,join_vars=true,drop_console=true,if_return=true,booleans=true,comparisons=true,properties=true,sequences=true\" >> dist/%npm_package_name: =_%.min.js",
     "build:js-without": "uglifyjs src/js/md-datepicker.js -b beautify=false,max-line-len=0 --screw-ie8 -m \"sort=true,toplevel=true\" --mangle-props --reserve-domprops --reserved-file reserved.json -c \"dead_code=true,drop_debugger=true,join_vars=true,drop_console=true,if_return=true,booleans=true,comparisons=true,properties=true,sequences=true\" > dist/%npm_package_name: =_%.dep.min.js",
     "build": "npm run build:js & npm run build:js-without & npm run build:css",
+    "debug": "uglifyjs src/js/md-datepicker.js -b beautify=true,max-line-len=0 --screw-ie8 >> debug/%npm_package_name: =_%.js",
+    "predebug": "del debug /F /Q & uglifyjs lib/cssua/cssua.js lib/jquery-easing/jquery.easing.js lib/moment/moment.js -b beautify=true,max-line-len=0 --screw-ie8 -m -c \"dead_code=false,drop_debugger=false,join_vars=false,drop_console=false,if_return=false,booleans=false,comparisons=false,properties=false,sequences=false\" > debug/%npm_package_name: =_%.js",
     "prebuild": "del dist /F /Q & uglifyjs lib/cssua/cssua.js lib/jquery-easing/jquery.easing.js lib/moment/moment.js -b beautify=false,max-line-len=0 --screw-ie8 -m -c \"dead_code=true,drop_debugger=true,join_vars=true,drop_console=true,if_return=true,booleans=true,comparisons=true,properties=true,sequences=true\" > dist/%npm_package_name: =_%.min.js"
   },
   "repository": {
