@@ -1,6 +1,6 @@
 {
   "name": "md-datepicker",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Material Design inpired date- and timepicker",
   "scripts": {
     "build:css": "autoprefixer -b \"last 2 versions\" < src/css/md-datepicker.css | cssmin > dist/%npm_package_name: =_%.min.css",
