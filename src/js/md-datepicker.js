@@ -407,10 +407,25 @@
 		};
 		var locate = function(input){
 			// console.log(window.innerWidth, $(window).width(), document)
-			var pos = $(input).offset(), width = proxy.width(), height = proxy.height(), transform_origin = $(input).offset();
-			pos.top = (pos.top+height+8>=$(window).height()) ? $(window).height()-height-8 : pos.top;
-			pos.left = (pos.left+width+8>=$(window).width()) ? $(window).width()-width-8 : pos.left;
+			var pos = $(input).offset(),
+				width = proxy.width(),
+				height = proxy.height(),
+				transform_origin = $(input).offset(),
+				offsetTop 	= Math.min(window.innerHeight + window.pageYOffset, input.offsetParent.parentNode.getBoundingClientRect().height + input.offsetParent.parentNode.scrollTop),
+				offsetLeft 	= Math.max(window.innerWidth  + window.pageXOffset, input.offsetParent.parentNode.getBoundingClientRect().width  + input.offsetParent.parentNode.scrollLeft);
+
+			pos.top =  (pos.top+height+8>= offsetTop) ? offsetTop - height - 8 : (window.pageYOffset + 8>=pos.top)?window.pageYOffset + 8:pos.top;
+			pos.left = (pos.left+width+8>= offsetLeft) ? offsetLeft - width - 8 : (window.pageXOffset + 8>=pos.left)?window.pageXOffset + 8:pos.left;
 			pos.transform_origin = (transform_origin.left - pos.left)+'px '+(transform_origin.top - pos.top)+'px';
+
+			console.log({
+				offsetTop:offsetTop,
+				pagescrollY:window.pageYOffset,
+				offsetLeft:offsetLeft,
+				pagescrollX:window.pageXOffset,
+				height:height,
+				width:width
+			})
 			return pos;
 		}
 		this.show = function(input){
@@ -496,7 +511,22 @@
 				pos = locate(input);
 				proxy.css({
 					top: pos.top,
-					left: pos.left
+					left: pos.left,
+					'transform-origin': pos.transform_origin,
+					'-webkit-transform-origin': pos.transform_origin
+				}).removeClass('animate');
+  				doit = setTimeout(function(){
+  					proxy.addClass('animate')
+  				}, 100);
+			});
+			$(window).on('scroll.id'+proxy.id_number, function(event) {
+				clearTimeout(doit);
+				pos = locate(input);
+				proxy.css({
+					top: pos.top,
+					left: pos.left,
+					'transform-origin': pos.transform_origin,
+					'-webkit-transform-origin': pos.transform_origin
 				}).removeClass('animate');
   				doit = setTimeout(function(){
   					proxy.addClass('animate')
@@ -508,6 +538,7 @@
 			proxy.removeClass('clockpicker md-datepicker-visible animate');
 			proxy.el.buttons.off();
 			$(window).off('resize.id'+proxy.id_number);
+			$(window).off('scroll.id'+proxy.id_number);
 			proxy.on(transitionend, function(event) {
 				event.preventDefault();
 				proxy.addClass('invisible');
@@ -788,6 +819,16 @@
 			console.log(moment.duration(moment()-start1));
 		})
 	};
+
+    $.fn.hasScrollBarY = function(options){
+        var innerWidth   = this.innerWidth();
+        var clientWidth  = this[0].clientWidth;
+        if(innerWidth == clientWidth){
+            return false;
+        }
+        return true;
+    };
+
 })( jQuery, window, document );
 
 function daysInMonth(date) {

@@ -43,11 +43,13 @@ i {
 	font-family: roboto;
 	color: #fff;
 	font-weight: normal;
+	background: #fff;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+
 .md-datepicker__overlay {
 	background-color: #000;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	height: 100%;
@@ -66,7 +68,6 @@ i {
 	visibility: hidden;
 }
 .md-datepicker:before {
-    content: "";
     width: 100%;
     display: block;
     position: absolute;
@@ -350,7 +351,8 @@ i.md-toggle-state {
 .md-select-wrap{
     background-color: #fff;
 }
-.md-datepicker.md-dark:before,
+
+.md-datepicker.md-dark,
 .md-datepicker.md-dark>div:not(:first-child),
 .md-datepicker.md-dark .md-select-wrap,
 .md-dark .md-datepicker:before,
