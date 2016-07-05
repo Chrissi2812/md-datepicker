@@ -407,7 +407,7 @@
 		};
 		var locate = function(input){
 			// console.log(window.innerWidth, $(window).width(), document)
-			var pos = $(input).offset(), width = proxy.width(), height = proxy.height(), transform_origin = $(input).offset();
+			var pos = $(input).offset(), width = proxy[0].clientWidth, height = proxy[0].clientHeight, transform_origin = $(input).offset();
 			pos.top = (pos.top+height+8>=$(window).height()) ? $(window).height()-height-8 : pos.top;
 			pos.left = (pos.left+width+8>=$(window).width()) ? $(window).width()-width-8 : pos.left;
 			pos.transform_origin = (transform_origin.left - pos.left)+'px '+(transform_origin.top - pos.top)+'px';
