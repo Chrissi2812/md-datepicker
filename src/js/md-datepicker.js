@@ -221,7 +221,7 @@
 			'<span class="md-pm">PM</span>'+
 			'</div>'+
 			'</div>'+
-			'<i class="md-toggle-state no-hover">&#xE878</i>'+
+			((settings.datepicker) ? '<i class="md-toggle-state no-hover">&#xE878;</i>':'')+
 			'</div>'+
 			'<div class="md-clock">'+
 				'<div class="md-hours">'+hour_tmpl+'</div>'+
@@ -308,7 +308,7 @@
 		};
 		var template = '<div class="md-datepicker md-'+settings.theme.split(' ').join(' md-')+((settings.animated=='all'||settings.animated=='inout'||settings.animated) ? ' md-datepicker-animated': '')+((settings.custom_class!='')?' '+settings.custom_class:'')+'" id="md-datepicker-'+id.pad(3)+'">'+
 		'<div class="md-datepicker-views">'+
-		'<div class="md-datepicker-dateview">'+
+		'<div class="md-datepicker-dateview" '+((settings.datepicker)? '':'style="display:none;"')+'>'+
 		'<div class="md-datepick-header">'+
 		'<div>'+
 		'<span class="year"></span>'+
