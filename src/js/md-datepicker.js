@@ -682,6 +682,7 @@
 			changeMonth(this.className.split(' ')[0].split('-')[1]);
 		}
 		var proxy = $($(template).appendTo("body")[0]);
+		console.log(proxy)
 		proxy.el = {};
 		proxy.id_number = id;
 		if (settings.timepicker) {
@@ -770,6 +771,7 @@
 			container = [];
 		return this.each(function() {
 			this.initilized = true;
+			this.datepicker = proxy;
 			$(this).on('focus', function(event) {
 				event.preventDefault();
 				$(container).removeClass('focused')
